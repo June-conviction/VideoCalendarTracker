@@ -16,20 +16,40 @@ export default function LoadingPage() {
   const playlistId = sessionStorage.getItem("playlistId");
 
   useEffect(() => {
-    // Simulate progress to 70%
+    // Always ensure progress starts from 0
+    setProgress(0);
+    
+    // First progress phase - simulate to 60%
     const interval = setInterval(() => {
       setProgress((prev) => {
-        if (prev >= 70) {
+        if (prev >= 60) {
           clearInterval(interval);
           setShowAuth(true);
-          return 70;
+          return 60;
         }
         return prev + 5;
       });
-    }, 200);
+    }, 150);
 
     return () => clearInterval(interval);
   }, []);
+
+  useEffect(() => {
+    // Middle progress phase - move to 80% when showing auth
+    if (showAuth && progress === 60) {
+      const interval = setInterval(() => {
+        setProgress((prev) => {
+          if (prev >= 80) {
+            clearInterval(interval);
+            return 80;
+          }
+          return prev + 5;
+        });
+      }, 150);
+      
+      return () => clearInterval(interval);
+    }
+  }, [showAuth, progress]);
 
   useEffect(() => {
     // If user is already authenticated, complete the progress and navigate

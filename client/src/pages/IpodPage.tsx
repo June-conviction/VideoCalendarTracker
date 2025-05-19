@@ -19,6 +19,10 @@ export default function IpodPage() {
   const queryClient = useQueryClient();
 
   const playlistId = params?.id;
+  
+  const handleShowCoverFlow = () => {
+    setShowCoverFlow(true);
+  };
 
   // Fetch playlist data
   const { data: playlist, isLoading, error } = useQuery({
@@ -123,12 +127,13 @@ export default function IpodPage() {
             color={playlist.color || "silver"} 
             playlist={playlist}
             currentTrack={currentTrack}
+            onShowCoverFlow={handleShowCoverFlow}
           />
           
           {/* Controls Under iPod */}
           <div className="max-w-xs mx-auto mt-8 flex flex-col items-center">
             <Button 
-              onClick={() => setShowCoverFlow(true)}
+              onClick={handleShowCoverFlow}
               className="bg-[#007AFF] hover:bg-[#007AFF]/90 text-white font-bold py-2 px-6 rounded-full shadow-md transition mb-4"
             >
               View Cover Flow

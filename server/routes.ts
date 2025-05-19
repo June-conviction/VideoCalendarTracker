@@ -30,6 +30,27 @@ function extractAppleMusicPlaylistId(url: string): string | null {
   return match ? match[1] : null;
 }
 
+// Helper function to extract metadata from Apple Music playlist page
+async function fetchAppleMusicPlaylist(url: string): Promise<any> {
+  const cheerio = require('cheerio');
+  try {
+    const response = await fetch(url);
+    const html = await response.text();
+    const $ = cheerio.load(html);
+    
+    return {
+      title: $('meta[property="og:title"]').attr('content') || 'Apple Music Playlist',
+      description: $('meta[property="og:description"]').attr('content') || '',
+      image_url: $('meta[property="og:image"]').attr('content') || '',
+      creator: $('meta[name="apple:artist"]').attr('content') || 'Unknown Artist',
+      tracks: [] // We can't get tracks without Apple Music API, but we'll use placeholder array
+    };
+  } catch (error) {
+    console.error('Error scraping Apple Music playlist:', error);
+    throw new Error('Failed to extract Apple Music playlist metadata');
+  }
+}
+
 // Helper function to refresh Spotify access token
 async function getSpotifyAccessToken(): Promise<string> {
   const params = new URLSearchParams();
@@ -155,14 +176,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       try {
         // Try using the Edge Function
-        playlistData = await invokeEdgeFunction('fetch-playlist-info', {
-          playlist_url: url,
-          service
-        });
-      } catch (edgeError) {
-        console.error('Edge function error:', edgeError);
+        try {
+          playlistData = await invokeEdgeFunction('fetch-playlist-info', {
+            playlist_url: url,
+            service
+          });
+          console.log('Successfully fetched playlist data from Edge Function');
+        } catch (edgeFunctionError) {
+          // Edge function error - fall back to direct API calls
+          console.error('Edge function error:', edgeFunctionError);
+          throw edgeFunctionError;
+        }
+      } catch (error) {
+        console.error('Fallback to direct API calls:', error);
         
-        // Fallback to direct Spotify API for development
+        // Fallback to direct API calls for development
         if (service === 'spotify') {
           const spotifyData = await fetchSpotifyPlaylist(playlistId);
           
@@ -180,12 +208,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
               image_url: item.track.album.images[0]?.url
             }))
           };
+        } else if (service === 'apple') {
+          // For Apple Music, we'll use web scraping to extract metadata
+          const appleMusicData = await fetchAppleMusicPlaylist(url);
+          
+          // Use the scraped data
+          playlistData = {
+            title: appleMusicData.title,
+            description: appleMusicData.description,
+            image_url: appleMusicData.image_url,
+            creator: appleMusicData.creator,
+            tracks: appleMusicData.tracks || []
+          };
         } else {
-          // For Apple Music, we'll need the edge function to work
-          return res.status(500).json({ 
-            message: 'Failed to fetch playlist data from Apple Music',
-            error: (edgeError as Error).message 
-          });
+          return res.status(400).json({ message: 'Unsupported music service' });
         }
       }
       

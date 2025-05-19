@@ -10,9 +10,10 @@ interface IpodDeviceProps {
     title: string;
     artist: string;
   };
+  onShowCoverFlow: () => void;
 }
 
-export default function IpodDevice({ color, playlist, currentTrack }: IpodDeviceProps) {
+export default function IpodDevice({ color, playlist, currentTrack, onShowCoverFlow }: IpodDeviceProps) {
   const [isPlaying, setIsPlaying] = useState(false);
 
   const colorClasses = {
@@ -26,9 +27,19 @@ export default function IpodDevice({ color, playlist, currentTrack }: IpodDevice
   const handlePlay = () => {
     setIsPlaying(!isPlaying);
   };
+  
+  const handleClick = () => {
+    onShowCoverFlow();
+  };
 
   return (
-    <div className={cn("max-w-xs mx-auto rounded-3xl shadow-xl overflow-hidden", colorClasses[color as keyof typeof colorClasses])}>
+    <div 
+      className={cn(
+        "max-w-xs mx-auto rounded-3xl shadow-xl overflow-hidden cursor-pointer transition transform hover:scale-105", 
+        colorClasses[color as keyof typeof colorClasses]
+      )}
+      onClick={handleClick}
+    >
       {/* iPod Screen */}
       <div className="ipod-screen p-3 rounded-t-3xl">
         {/* Playlist Header */}
@@ -38,7 +49,7 @@ export default function IpodDevice({ color, playlist, currentTrack }: IpodDevice
         </div>
         
         {/* Playlist Cover */}
-        <div className="aspect-square overflow-hidden rounded-lg mb-3 relative">
+        <div className="aspect-square overflow-hidden rounded-lg mb-3 relative shine-effect">
           <img 
             src={playlist.image_url || "https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17"} 
             alt="Playlist Cover" 
@@ -60,7 +71,11 @@ export default function IpodDevice({ color, playlist, currentTrack }: IpodDevice
       </div>
       
       {/* iPod Control Wheel */}
-      <IpodWheel onPlayPause={handlePlay} isPlaying={isPlaying} />
+      <IpodWheel 
+        onPlayPause={handlePlay} 
+        isPlaying={isPlaying} 
+        onMenu={() => onShowCoverFlow()}
+      />
     </div>
   );
 }
