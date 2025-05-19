@@ -1,0 +1,213 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: 0 0% 100%;
+  --foreground: 20 14.3% 4.1%;
+  --muted: 60 4.8% 95.9%;
+  --muted-foreground: 25 5.3% 44.7%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 20 14.3% 4.1%;
+  --card: 0 0% 100%;
+  --card-foreground: 20 14.3% 4.1%;
+  --border: 20 5.9% 90%;
+  --input: 20 5.9% 90%;
+  --primary: 340 82% 52%; /* FF2D55 - brand primary */
+  --primary-foreground: 355 100% 97%;
+  --secondary: 211 100% 50%; /* 007AFF - brand secondary */
+  --secondary-foreground: 210 40% 98%;
+  --accent: 60 4.8% 95.9%;
+  --accent-foreground: 24 9.8% 10%;
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 60 9.1% 97.8%;
+  --ring: 20 14.3% 4.1%;
+  --radius: 0.5rem;
+
+  /* iPod colors */
+  --ipod-silver: 0 0% 91%;
+  --ipod-black: 0 0% 10%;
+  --ipod-pink: 349 92% 76%;
+  --ipod-green: 93 53% 62%;
+  --ipod-blue: 207 70% 65%;
+}
+
+.dark {
+  --background: 240 10% 3.9%;
+  --foreground: 0 0% 98%;
+  --muted: 240 3.7% 15.9%;
+  --muted-foreground: 240 5% 64.9%;
+  --popover: 240 10% 3.9%;
+  --popover-foreground: 0 0% 98%;
+  --card: 240 10% 3.9%;
+  --card-foreground: 0 0% 98%;
+  --border: 240 3.7% 15.9%;
+  --input: 240 3.7% 15.9%;
+  --primary: 340 82% 52%;
+  --primary-foreground: 355 100% 97%;
+  --secondary: 211 100% 50%;
+  --secondary-foreground: 210 40% 98%;
+  --accent: 240 3.7% 15.9%;
+  --accent-foreground: 0 0% 98%;
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 0 0% 98%;
+  --ring: 240 4.9% 83.9%;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-sans antialiased bg-[#F5F5F7] text-foreground;
+  }
+
+  /* Cover Flow Animation */
+  .coverflow {
+    @apply relative perspective-1000;
+  }
+
+  .coverflow-item {
+    @apply absolute transition-all duration-500 ease-in-out transform-style-3d;
+  }
+
+  .coverflow-item.active {
+    @apply transform scale-110 z-10 translate-z-50;
+  }
+
+  .coverflow-item.left {
+    @apply transform rotate-y-45 -translate-x-12 scale-90 z-5;
+  }
+
+  .coverflow-item.right {
+    @apply transform -rotate-y-45 translate-x-12 scale-90 z-5;
+  }
+
+  .coverflow-item.far-left {
+    @apply transform rotate-y-60 -translate-x-24 scale-80 z-1;
+  }
+
+  .coverflow-item.far-right {
+    @apply transform -rotate-y-60 translate-x-24 scale-80 z-1;
+  }
+
+  /* iPod Styles */
+  .ipod-wheel {
+    @apply relative rounded-full bg-gradient-to-tr from-[#e6e6e6] to-white shadow-[8px_8px_16px_#d9d9d9,-8px_-8px_16px_#ffffff];
+  }
+
+  .ipod-button {
+    @apply border-none outline-none select-none;
+  }
+
+  .ipod-screen {
+    @apply bg-gradient-to-b from-[#f5f5f7] to-[#e8e9ea] shadow-inner;
+  }
+
+  /* Shine Effect */
+  .shine-effect {
+    @apply relative overflow-hidden;
+  }
+
+  .shine-effect::after {
+    content: "";
+    @apply absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent bg-200-100 bg-no-repeat animate-shine pointer-events-none;
+  }
+}
+
+@keyframes shine {
+  0% {
+    background-position: -100px;
+  }
+  40%, 100% {
+    background-position: 300px;
+  }
+}
+
+@layer utilities {
+  .perspective-1000 {
+    perspective: 1000px;
+  }
+  
+  .transform-style-3d {
+    transform-style: preserve-3d;
+  }
+  
+  .translate-z-50 {
+    transform: translateZ(50px);
+  }
+  
+  .rotate-y-45 {
+    transform: rotateY(45deg);
+  }
+  
+  .rotate-y-60 {
+    transform: rotateY(60deg);
+  }
+  
+  .-rotate-y-45 {
+    transform: rotateY(-45deg);
+  }
+  
+  .-rotate-y-60 {
+    transform: rotateY(-60deg);
+  }
+  
+  .translate-x-12 {
+    transform: translateX(3rem);
+  }
+  
+  .-translate-x-12 {
+    transform: translateX(-3rem);
+  }
+  
+  .translate-x-24 {
+    transform: translateX(6rem);
+  }
+  
+  .-translate-x-24 {
+    transform: translateX(-6rem);
+  }
+  
+  .scale-80 {
+    transform: scale(0.8);
+  }
+  
+  .scale-90 {
+    transform: scale(0.9);
+  }
+  
+  .scale-110 {
+    transform: scale(1.1);
+  }
+  
+  .bg-200-100 {
+    background-size: 200px 100%;
+  }
+  
+  .animate-shine {
+    animation: shine 2s infinite;
+  }
+  
+  .animate-fade-in {
+    animation: fadeIn 0.5s ease-in-out;
+  }
+  
+  .z-1 {
+    z-index: 1;
+  }
+  
+  .z-5 {
+    z-index: 5;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
