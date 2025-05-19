@@ -1,0 +1,136 @@
+Below is a **single, copy-ready hand-off doc** you can paste straight into Replit (or save as LinkPlaylist_Replit_Handoff.md).
+It references the three ZIP packages you just exported:
+
+/frontend.zip          ←  HTML / CSS / JS + assets (iPod, hello)
+/supabase.zip          ←  Edge-function source
+/ipod+hello.zip        ←  Raw PNGs (all iPod colours + hello splash)
+
+
+Feel free to add the four JPG screenshots you showed a moment ago in their own screenshots/ folder; the doc already points to them.
+
+---
+
+# LinkPlaylist — Replit Build Brief 🚀
+
+| section | what you’ll find                      |
+| ------- | ------------------------------------- |
+| 0       | TL;DR (30 sec read)                   |
+| 1       | User flows (first-time vs. returning) |
+| 2       | Post-login UI + owner/visitor rules   |
+| 3       | Data model (Supabase)                 |
+| 4       | Back-end & secrets setup              |
+| 5       | To-do list for Replit dev             |
+| 6       | File packages you received            |
+| 7       | Contact                               |
+
+---
+
+## 0  TL;DR
+
+*LinkPlaylist* lets anyone turn a boring Spotify / Apple Music link in their bio into a **personalised iPod-style page**.
+Users pick an iPod Nano colour ➜ paste a playlist URL ➜ sign in with Google ➜ voilà: their own “mini iPod” web page.
+
+---
+
+## 1  User Flows (▲ = UI step)
+
+<details><summary><strong>1-A First-time visitor</strong></summary>
+
+| ▲ step                     | UX copy / action                                                                                     |
+| -------------------------- | ---------------------------------------------------------------------------------------------------- |
+| Homepage                   | CTA “Make your own page”                                                                             |
+| iPod picker                | Click one of five Nano colours (PNGs in /assets/)                                                  |
+| Streaming-service question | Buttons · Spotify · Apple Music · Others → “My bad, we’re currently Apple Music & Spotify friendly.” |
+| Playlist-URL input         | Paste URL → **Submit**                                                                               |
+| Loader / quote             | “Your taste / playlist deserves more audience.”                                                      |
+| Google OAuth popup         | “Continue with Google to save your page”                                                             |
+
+</details>
+
+<details><summary><strong>1-B Returning visitor</strong></summary>
+
+| ▲ step             | UX copy / action         |
+| ------------------ | ------------------------ |
+| Homepage           | Link “Already a member?” |
+| Google OAuth popup | Same as above            |
+
+</details>
+
+*👉 All four desktop/mobile mock-ups live in /screenshots/.*
+
+---
+
+## 2  Post-login UI & Permissions
+
+| Feature / area             | Owner sees                      | Visitor sees     |
+| -------------------------- | ------------------------------- | ---------------- |
+| iPod page (grid)           | ✅                               | ✅                |
+| Cover Flow (full view)     | ✅                               | ✅                |
+| **Delete playlist** button | ✅ visible + active              | ❌ hidden         |
+| Hamburger menu             | Make my iPod · Log in · Contact | same three items |
+
+---
+
+## 3  Supabase Data Model (linkplaylist project)
+
+| table                     | key columns                                                                                                             | note                             |
+| ------------------------- | ----------------------------------------------------------------------------------------------------------------------- | -------------------------------- |
+| **auth.users**            | id (uuid, PK)                                                                                                         | Supabase Google OAuth auto-fills |
+| **playlist-retrieve**     | id, user_id (FK), playlist_url, platform, playlist_title, playlist_description, playlist_image, creator | filled by Edge Function          |
+| **user\_follow** (future) | id, follower, following, status, blocked_by, created_at                                                     | optional for MVP                 |
+
+---
+
+## 4  Back-end & Secrets
+
+### 4-A Environment variables
+
+Add to **Replit → Secrets** **and** Supabase Studio → Edge Functions → Secrets:
+
+SB_URL=https://spifocdejillzfsksudg.supabase.co
+SB_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNwaWZvY2RlamlsbHpmc2tzdWRnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc2Mjk2NTUsImV4cCI6MjA2MzIwNTY1NX0.F3e1E_7b4MJNoC9aOxn3GTZMpvYb24OSb-911udhFps
+SPOTIFY_CLIENT_ID=14b6440f884549ff959bf023f24bf17f
+SPOTIFY_CLIENT_SECRET=876e09854b5b4fc78db21f688c733b70
+SPOTIFY_REFRESH_TOKEN=AQA5y6dMI7AU1iZrP2PPn5ph8QW82XMR2kOjBAuseZcP2Fv2Zo9GN-dbZfk3ESLU3yD1GaOyk9aLhfGU4B8ZFNPpVtyW8gEjGqwcl3skOVhX53pHcdefBbDVNPnPiIyphGk
+SENDGRID_API_KEY=…if email alerts used…
+ALERT_EMAIL_TO=june@linkplaylist.xyz
+ALERT_EMAIL_FROM=june@linkplaylist.xyz
+
+
+### 4-B Edge Functions (already in /supabase/functions/)
+
+| name                                | purpose                                                                       | entry                          |
+| ----------------------------------- | ----------------------------------------------------------------------------- | ------------------------------ |
+| **fetch-playlist-info**             | POST {playlist_url,id} ➜ refresh Spotify token ➜ pull metadata ➜ insert row | fetch-playlist-info/index.ts |
+
+
+> **Replit Scheduler** (Hacker plan) or cron-job.org → call notify-usage-limit daily.
+
+---
+
+## 5  Replit Dev To-Do
+
+1. **Import .env values** above.
+2. **Test Google OAuth redirect** (homepage ➜ Supabase ➜ back).
+3. **Connect Edge Function calls** – script.js already has fetch(...); just drop correct endpoint.
+4. **Enforce owner/visitor rule** – delete-btn visible only if session.user.id === playlist.user_id.
+5. *(Opt.)* Set up cron to hit /notify-usage-limit.
+6. Ensure the five iPod PNG images + hello.png live in /public/assets/.
+
+---
+
+## 6  Packages Included
+
+| file                     | contents                                                                     |
+| ------------------------ | ---------------------------------------------------------------------------- |
+| **frontend.zip**         | index.html, styles.css, script.js, assets/ (iPod PNGs, hello splash) |
+| **supabase.zip**         | two Edge Function folders + README_edge.txt                                |
+| **ipod+hello.zip**       | raw PNG source if you need to re-export / compress                           |
+| **screenshots/** *(add)* | 4 mock-ups shown in latest convo                                             |
+
+---
+
+## 7  Contact
+
+June Jeong  (Founder)
+✉︎  june@linkplaylist.xyz
