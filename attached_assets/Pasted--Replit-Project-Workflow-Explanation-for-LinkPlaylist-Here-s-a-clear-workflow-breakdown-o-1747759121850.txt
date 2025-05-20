@@ -1,0 +1,62 @@
+## ✅ **Replit Project Workflow Explanation (for LinkPlaylist)**
+
+Here's a clear workflow breakdown of the LinkPlaylist project.
+Please implement this clearly defined step-by-step flow using **Next.js** page-based routing:
+
+### **Step 1: Hello Page**
+
+* Route: `/hello`
+* Screen: Simple intro "hello" graphic.
+
+### **Step 2: Select iPod Nano**
+
+* Route: `/select-ipod`
+* Screen: Multiple iPod Nano models (different colors).
+* User Action: User selects an iPod → save selected model → proceed to `/select-service`.
+
+### **Step 3: Select Music Service**
+
+* Route: `/select-service`
+* Screen: Ask user which music streaming service they use:
+
+  * Buttons: \["Spotify", "Apple Music", "Others"]
+* User Action:
+
+  * If "Spotify" or "Apple Music" clicked → proceed to `/submit-playlist`.
+  * If "Others" clicked → show message ("Sorry, currently we support only Spotify and Apple Music.").
+
+### **Step 4: Submit Playlist URL**
+
+* Route: `/submit-playlist`
+* Screen: Input field for user's playlist URL.
+* User Action:
+
+  * User pastes playlist URL → Click submit button.
+  * Trigger backend API to extract playlist metadata (Spotify/Apple Music API).
+  * Save data to Supabase → proceed to `/loading`.
+
+### **Step 5: Loading Screen**
+
+* Route: `/loading`
+* Screen: Display loading animation with message ("Your taste deserves more audience").
+* Automatic Action: After successful playlist metadata extraction, automatically redirect to `/user-profile`.
+
+### **Step 6: User Profile Page**
+
+* Route: `/user-profile`
+* Screen: User's personalized "iPod themed" page.
+* Features:
+
+  * Customizable wallpaper.
+  * View and share uploaded playlist.
+  * Allow uploading additional playlists.
+  * Allow guest visitors to leave notes (`Guest Note`).
+
+---
+
+## 📌 **Important Implementation Notes:**
+
+* Clearly separate each step into its own Next.js page route.
+* Use Next.js routing (`useRouter`) for clear page transitions.
+* Store user selections temporarily using React state or Next.js router queries until final data submission.
+* Ensure backend integration (playlist extraction & Supabase data storage) is properly handled at Step 4.

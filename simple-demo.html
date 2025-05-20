@@ -3,261 +3,320 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LinkPlaylist - iPod Styled Playlist Sharing</title>
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <title>LinkPlaylist - Demo</title>
+  <script src="https://cdn.tailwindcss.com"></script>
   <style>
     body {
-      background-color: #000;
-      color: #fff;
+      background-color: black;
+      color: white;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
     }
-    .hello {
-      font-family: 'Helvetica', sans-serif;
-      background: linear-gradient(45deg, #ff6b6b, #5e60ce, #64dfdf, #ffbe0b);
+    
+    .gradient-text {
+      background-image: linear-gradient(45deg, #ff6b6b, #5e60ce, #64dfdf, #ffbe0b);
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
-      font-size: 4rem;
-      font-weight: bold;
-      text-align: center;
     }
-    .ipod-container {
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-      flex-wrap: wrap;
-    }
-    .ipod {
-      width: 140px;
-      transition: transform 0.3s ease;
+    
+    .ipod-option {
+      transition: all 0.3s ease;
       cursor: pointer;
     }
-    .ipod:hover {
+    
+    .ipod-option:hover {
       transform: scale(1.05);
     }
-    .ipod.selected {
+    
+    .ipod-option.selected {
       transform: scale(1.1);
-      box-shadow: 0 0 15px rgba(255,255,255,0.5);
-      border-radius: 10px;
-    }
-    .desktop-profile {
-      background-image: url('https://images.unsplash.com/photo-1691252163653-5ba40ae7bede');
-      background-size: cover;
-      border-radius: 10px;
-      overflow: hidden;
-    }
-    .desktop-icon {
-      width: 70px;
-      height: 70px;
-      background-color: rgba(255,255,255,0.2);
-      backdrop-filter: blur(5px);
-      border-radius: 10px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      margin: 10px;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .desktop-icon:hover {
-      background-color: rgba(255,255,255,0.3);
-    }
-    .desktop-icon svg {
-      width: 32px;
-      height: 32px;
-      margin-bottom: 5px;
-    }
-    .desktop-icon span {
-      font-size: 12px;
-      text-align: center;
-      color: white;
-      text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
-    }
-    .step {
-      display: none;
-    }
-    .step.active {
-      display: block;
-    }
-    .coverflow {
-      perspective: 1000px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 300px;
-    }
-    .album {
-      width: 200px;
-      height: 200px;
-      position: absolute;
-      transition: all 0.5s ease;
-      box-shadow: 0 0 15px rgba(0,0,0,0.5);
-      border-radius: 5px;
-      background-size: cover;
-      background-position: center;
-    }
-    .album.current {
-      z-index: 10;
-      transform: translateZ(50px) scale(1.1);
-    }
-    .album.prev {
-      transform: translateX(-150px) rotateY(45deg) scale(0.8);
-      z-index: 5;
-      opacity: 0.7;
-    }
-    .album.next {
-      transform: translateX(150px) rotateY(-45deg) scale(0.8);
-      z-index: 5;
-      opacity: 0.7;
-    }
-    .login-modal {
-      display: none;
-      position: fixed;
-      inset: 0;
-      z-index: 50;
-      background-color: rgba(0, 0, 0, 0.5);
-      align-items: center;
-      justify-content: center;
-      padding: 1rem;
-    }
-    .login-modal.active {
-      display: flex;
-    }
-    .modal-content {
-      position: relative;
-      background-color: white;
+      box-shadow: 0 0 0 2px #3b82f6;
       border-radius: 0.5rem;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-      max-width: 28rem;
-      width: 100%;
-      padding: 1.5rem;
     }
-    .dark .modal-content {
-      background-color: #1f2937;
+    
+    .perspective-1000 {
+      perspective: 1000px;
     }
+    
+    .animate-spin-slow {
+      animation: spin 2s linear infinite;
+    }
+    
     @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-    .loading-spinner {
-      height: 1.25rem;
-      width: 1.25rem;
-      border-radius: 9999px;
-      border-top: 2px solid #1f2937;
-      border-bottom: 2px solid #1f2937;
-      animation: spin 0.75s linear infinite;
+      from {
+        transform: rotate(0deg);
+      }
+      to {
+        transform: rotate(360deg);
+      }
     }
   </style>
 </head>
-<body class="min-h-screen flex items-center justify-center">
-  <div class="container mx-auto px-4 py-16 max-w-4xl">
-    <!-- Step 1: Hello Splash -->
-    <div id="step1" class="step active">
-      <div class="mb-16 hello text-center">hello</div>
-      <p class="text-center text-gray-400 text-lg mb-10">Welcome to LinkPlaylist - Your iPod styled playlist sharing experience</p>
-      <div class="flex justify-center">
-        <button id="nextToStep2" class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+<body>
+  <div class="container mx-auto px-4 py-8">
+    <!-- Mockup Navigation -->
+    <div class="mb-8 flex items-center justify-between">
+      <div class="flex items-center space-x-4">
+        <a href="#hello" class="text-white hover:text-blue-400">1. Hello</a>
+        <span>/</span>
+        <a href="#select-ipod" class="text-white hover:text-blue-400">2. Select iPod</a>
+        <span>/</span>
+        <a href="#select-service" class="text-white hover:text-blue-400">3. Select Service</a>
+        <span>/</span>
+        <a href="#submit-playlist" class="text-white hover:text-blue-400">4. Submit Playlist</a>
+        <span>/</span>
+        <a href="#loading" class="text-white hover:text-blue-400">5. Loading</a>
+        <span>/</span>
+        <a href="#user-profile" class="text-white hover:text-blue-400">6. User Profile</a>
+      </div>
+      <div>
+        <span class="text-sm text-gray-400">LinkPlaylist Demo</span>
+      </div>
+    </div>
+    
+    <!-- Hello Page -->
+    <section id="hello" class="min-h-[500px] flex items-center justify-center mb-16">
+      <div class="text-center">
+        <h1 class="text-8xl font-bold mb-8 gradient-text">hello</h1>
+        
+        <a href="#select-ipod" class="mt-8 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors inline-block">
           Get Started
-        </button>
+        </a>
       </div>
-    </div>
+    </section>
     
-    <!-- Step 2: iPod Selection -->
-    <div id="step2" class="step">
-      <h2 class="text-3xl font-bold text-center mb-8">Pick your iPod Nano</h2>
-      <div class="ipod-container mb-10">
-        <img src="attached_assets/iPod black new version.png" alt="Black iPod" data-color="black" class="ipod">
-        <img src="attached_assets/iPod silver.png" alt="Silver iPod" data-color="silver" class="ipod">
-        <img src="attached_assets/iPod blue.png" alt="Blue iPod" data-color="blue" class="ipod">
-        <img src="attached_assets/iPod red.png" alt="Red iPod" data-color="red" class="ipod">
-        <img src="attached_assets/iPod yellow.png" alt="Yellow iPod" data-color="yellow" class="ipod">
-      </div>
-      <div class="flex justify-center">
-        <button id="backToStep1" class="px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 mr-4 transition-colors">
-          Back
-        </button>
-        <button id="nextToStep3" class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors" disabled>
-          Continue
-        </button>
-      </div>
-    </div>
-    
-    <!-- Step 3: Confirmation -->
-    <div id="step3" class="step">
-      <h2 class="text-3xl font-bold text-center mb-8">Your iPod is ready!</h2>
-      <div class="flex justify-center mb-10">
-        <img id="selectedIPod" src="attached_assets/iPod black new version.png" alt="Selected iPod" class="h-80">
-      </div>
-      <div class="flex justify-center">
-        <button id="backToStep2" class="px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 mr-4 transition-colors">
-          Back
-        </button>
-        <button id="nextToStep4" class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-          Continue
-        </button>
-      </div>
-    </div>
-    
-    <!-- Step 4: Chat Interface -->
-    <div id="step4" class="step">
-      <div class="max-w-md mx-auto bg-gray-900 rounded-xl p-6">
-        <div class="flex flex-col">
-          <div class="bg-gray-800 rounded-lg p-4 mb-4 self-start max-w-[80%]">
-            <p class="text-white">Hi I'm NotifyChat, what music streaming service do you use?</p>
-          </div>
-          
-          <div class="flex flex-wrap justify-end space-x-2 mb-4">
-            <button class="service-btn px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-              Spotify
-            </button>
-            <button class="service-btn px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors">
-              Apple Music
-            </button>
-            <button class="service-btn px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors">
-              Other
-            </button>
-          </div>
-          
-          <div id="spotifyChat" class="hidden">
-            <div class="bg-gray-800 rounded-lg p-4 mb-4 self-start max-w-[80%]">
-              <p class="text-white">Alright! Please share one of your playlist links:</p>
-            </div>
-            
-            <div class="mb-4">
-              <input type="text" placeholder="https://open.spotify.com/playlist/..." class="w-full bg-gray-800 text-white p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-            </div>
-            
-            <div class="flex justify-end">
-              <button id="submitPlaylist" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">Create iPod Experience</button>
-            </div>
-            
-            <div class="mt-6 text-center">
-              <p class="text-gray-400">Your taste deserves more audience.</p>
-              <button id="showLoginModal" class="text-blue-400 hover:text-blue-300 underline mt-1">Continue with Google</button>
+    <!-- iPod Selection Page -->
+    <section id="select-ipod" class="min-h-[500px] flex flex-col items-center justify-center mb-16 pt-16">
+      <div class="max-w-3xl w-full">
+        <h1 class="text-3xl font-bold text-center mb-8">Pick your iPod Nano</h1>
+        
+        <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
+          <!-- Black iPod -->
+          <div class="ipod-option selected">
+            <div class="flex flex-col items-center">
+              <img src="/images/iPod black new version.png" alt="Black iPod" class="h-[180px] object-contain" />
+              <p class="mt-2 text-center text-sm">Black</p>
             </div>
           </div>
           
-          <div id="otherChat" class="hidden">
-            <div class="bg-gray-800 rounded-lg p-4 mb-4 self-start max-w-[80%]">
-              <p class="text-white">My bad, we're currently Apple Music and Spotify friendly.</p>
+          <!-- Silver iPod -->
+          <div class="ipod-option">
+            <div class="flex flex-col items-center">
+              <img src="/images/iPod silver.png" alt="Silver iPod" class="h-[180px] object-contain" />
+              <p class="mt-2 text-center text-sm">Silver</p>
+            </div>
+          </div>
+          
+          <!-- Blue iPod -->
+          <div class="ipod-option">
+            <div class="flex flex-col items-center">
+              <img src="/images/iPod blue.png" alt="Blue iPod" class="h-[180px] object-contain" />
+              <p class="mt-2 text-center text-sm">Blue</p>
+            </div>
+          </div>
+          
+          <!-- Red iPod -->
+          <div class="ipod-option">
+            <div class="flex flex-col items-center">
+              <img src="/images/iPod red.png" alt="Red iPod" class="h-[180px] object-contain" />
+              <p class="mt-2 text-center text-sm">Red</p>
+            </div>
+          </div>
+          
+          <!-- Yellow iPod -->
+          <div class="ipod-option">
+            <div class="flex flex-col items-center">
+              <img src="/images/iPod yellow.png" alt="Yellow iPod" class="h-[180px] object-contain" />
+              <p class="mt-2 text-center text-sm">Yellow</p>
             </div>
           </div>
         </div>
+        
+        <div class="flex justify-center space-x-4">
+          <a href="#hello" class="px-4 py-2 bg-gray-700 rounded-lg hover:bg-gray-600 transition-colors">
+            Back
+          </a>
+          
+          <a href="#select-service" class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+            Continue
+          </a>
+        </div>
       </div>
-      
-      <div class="flex justify-center mt-6">
-        <button id="backToStep3" class="px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors">
-          Back
+    </section>
+    
+    <!-- Service Selection Page -->
+    <section id="select-service" class="min-h-[500px] flex flex-col items-center justify-center mb-16 pt-16">
+      <div class="max-w-md w-full bg-gray-800 rounded-xl p-6">
+        <h1 class="text-2xl font-bold text-center mb-6">Select Your Music Service</h1>
+        
+        <div class="space-y-4 mb-8">
+          <p class="text-gray-300 mb-4">
+            What music streaming service do you use?
+          </p>
+          
+          <div class="grid grid-cols-2 gap-4">
+            <button class="p-4 rounded-lg bg-green-600 text-white">
+              Spotify
+            </button>
+            
+            <button class="p-4 rounded-lg bg-gray-700 hover:bg-gray-600 text-white">
+              Apple Music
+            </button>
+            
+            <button class="p-4 rounded-lg col-span-2 bg-gray-700 hover:bg-gray-600 text-white">
+              Others
+            </button>
+          </div>
+        </div>
+        
+        <div class="flex justify-center">
+          <a href="#select-ipod" class="px-4 py-2 bg-gray-700 rounded-lg hover:bg-gray-600 transition-colors">
+            Back
+          </a>
+          
+          <a href="#submit-playlist" class="ml-4 px-4 py-2 bg-blue-600 rounded-lg hover:bg-blue-700 text-white transition-colors">
+            Continue
+          </a>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Playlist Submission Page -->
+    <section id="submit-playlist" class="min-h-[500px] flex flex-col items-center justify-center mb-16 pt-16">
+      <div class="max-w-md w-full bg-gray-800 rounded-xl p-6">
+        <h1 class="text-2xl font-bold text-center mb-6">Submit Your Playlist</h1>
+        
+        <div class="space-y-4">
+          <div>
+            <label for="playlistUrl" class="block text-sm font-medium mb-2">
+              Spotify Playlist URL
+            </label>
+            <input
+              id="playlistUrl"
+              type="text"
+              placeholder="https://open.spotify.com/playlist/..."
+              class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+          
+          <div>
+            <label for="playlistName" class="block text-sm font-medium mb-2">
+              Playlist Name (optional)
+            </label>
+            <input
+              id="playlistName"
+              type="text"
+              placeholder="My Awesome Playlist"
+              class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+          
+          <div class="flex justify-between pt-4">
+            <a
+              href="#select-service"
+              class="px-4 py-2 bg-gray-700 rounded-lg hover:bg-gray-600 transition-colors"
+            >
+              Back
+            </a>
+            
+            <a
+              href="#loading"
+              class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              Create iPod Experience
+            </a>
+          </div>
+          
+          <div class="text-center mt-4 text-gray-400 text-sm">
+            Your taste deserves more audience.
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Login Modal (Simulated) -->
+    <div id="login-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 hidden">
+      <div class="relative bg-white dark:bg-gray-900 rounded-lg shadow-xl max-w-md w-full p-6">
+        <div class="absolute top-4 right-4">
+          <button
+            onclick="document.getElementById('login-modal').classList.add('hidden')"
+            class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+          >
+            ✕
+          </button>
+        </div>
+        
+        <div class="text-center mb-6">
+          <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Continue with Google</h2>
+          <p class="text-gray-600 dark:text-gray-400 mt-2">
+            To save your playlist and create your page
+          </p>
+        </div>
+        
+        <div class="flex justify-center mb-6">
+          <div class="w-16 h-16 relative overflow-hidden">
+            <img 
+              src="/public/images/iPod black new version.png"
+              alt="Your iPod" 
+              class="object-contain"
+            />
+          </div>
+        </div>
+        
+        <p class="text-center text-gray-600 dark:text-gray-400 mb-6">
+          Your taste, playlist deserves more audience.
+        </p>
+        
+        <button
+          onclick="document.getElementById('login-modal').classList.add('hidden'); window.location.href='#loading'"
+          class="w-full flex items-center justify-center gap-3 bg-white border border-gray-300 rounded-md py-3 px-4 hover:bg-gray-50 transition-colors"
+        >
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M19.999 10.2217C20.0111 9.53428 19.934 8.84788 19.8169 8.17737H10.2041V11.8884H15.8276C15.7211 12.5391 15.4814 13.162 15.1229 13.7195C14.7644 14.2771 14.2946 14.7578 13.7416 15.1328L13.722 15.257L16.7512 17.5567L16.9609 17.5772C18.8883 15.8328 19.9996 13.266 19.9996 10.2217" fill="#4285F4" />
+            <path d="M10.2042 19.9999C12.9593 19.9999 15.2724 19.111 16.9609 17.5772L13.7416 15.1331C12.8808 15.7221 11.7239 16.1333 10.2042 16.1333C8.91385 16.126 7.65863 15.7206 6.61663 14.9747C5.57464 14.2287 4.79879 13.1802 4.39915 11.9778L4.27957 11.9878L1.12973 14.3766L1.08856 14.4888C1.93689 16.1457 3.23879 17.5387 4.84869 18.512C6.45859 19.4852 8.31301 20.001 10.2046 19.9999" fill="#34A853" />
+            <path d="M4.39911 11.9777C4.17592 11.3411 4.06075 10.673 4.05819 9.99996C4.0623 9.32799 4.18026 8.66075 4.40686 8.02225L4.40115 7.8961L1.19269 5.4834L1.0884 5.51303C0.372762 6.90341 0 8.43716 0 9.99987C0 11.5626 0.372762 13.0964 1.0884 14.4868L4.39911 11.9777Z" fill="#FBBC05" />
+            <path d="M10.2042 3.86663C11.6663 3.84438 13.0804 4.37803 14.1498 5.35558L17.0296 2.59996C15.1824 0.901848 12.7344 -0.0298855 10.2042 -3.6784e-05C8.3126 -0.000477834 6.45819 0.514732 4.8483 1.48798C3.2384 2.46124 1.93649 3.85416 1.08813 5.51101L4.3994 8.02225C4.79883 6.82005 5.57467 5.77151 6.61666 5.02552C7.65866 4.27953 8.91387 3.87391 10.2042 3.86663Z" fill="#EB4335" />
+          </svg>
+          <span class="text-gray-700 font-medium">Continue with Google</span>
         </button>
+        
+        <p class="text-xs text-center text-gray-500 dark:text-gray-400 mt-4">
+          By continuing, you agree to our Terms of Service and Privacy Policy.
+        </p>
       </div>
     </div>
     
-    <!-- Step 5: Profile Page -->
-    <div id="step5" class="step">
-      <div class="desktop-profile h-[600px] relative p-4 flex flex-col">
+    <!-- Loading Page -->
+    <section id="loading" class="min-h-[500px] flex flex-col items-center justify-center mb-16 pt-16">
+      <div class="max-w-md w-full text-center">
+        <div class="w-20 h-20 border-t-4 border-blue-500 border-solid rounded-full mx-auto mb-8 animate-spin-slow"></div>
+        
+        <h2 class="text-2xl font-semibold mb-4">Creating your iPod experience</h2>
+        
+        <p class="text-gray-400 mb-2">
+          Your taste deserves more audience.
+        </p>
+        
+        <div class="mt-8">
+          <div class="w-full bg-gray-700 rounded-full h-2.5">
+            <div class="bg-blue-600 h-2.5 rounded-full w-[75%]"></div>
+          </div>
+        </div>
+        
+        <div class="mt-4">
+          <a href="#user-profile" class="text-sm text-blue-400 hover:underline">Skip to result</a>
+        </div>
+      </div>
+    </section>
+    
+    <!-- User Profile Page -->
+    <section id="user-profile" class="min-h-[800px] pt-16 relative">
+      <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1691252163653-5ba40ae7bede')"></div>
+      
+      <div class="relative">
         <!-- Header -->
-        <div class="flex justify-between items-center mb-8">
-          <button class="w-10 h-10 rounded-full bg-black/30 backdrop-blur-md flex items-center justify-center text-white">
+        <header class="p-4 flex items-center justify-between">
+          <button class="w-10 h-10 rounded-full bg-black/30 backdrop-blur-md flex items-center justify-center text-white hover:bg-black/40 transition-colors">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
             </svg>
@@ -266,284 +325,92 @@
           <h1 class="text-xl font-semibold text-white drop-shadow-md">
             {linkPlaylist}
           </h1>
-        </div>
+        </header>
         
         <!-- Desktop Icons -->
-        <div class="flex-1 flex flex-wrap content-start">
-          <div class="desktop-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="white">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-            </svg>
-            <span>Wallpaper</span>
-          </div>
-          
-          <div class="desktop-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="white">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
-            </svg>
-            <span>Guest Note</span>
-          </div>
-          
-          <div id="showCoverFlow" class="desktop-icon">
-            <img id="profileIPod" src="attached_assets/iPod black new version.png" alt="My iPod" class="h-12">
-            <span>My iPod</span>
-          </div>
-          
-          <div class="desktop-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="white">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
-            </svg>
-            <span>Share Playlist</span>
-          </div>
-          
-          <div class="desktop-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="white">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
-            </svg>
-            <span>Post Playlist</span>
+        <div class="container mx-auto px-4 py-8 grid grid-cols-12 gap-8">
+          <div class="col-span-12 flex flex-wrap justify-center items-start gap-8 pt-12">
+            <!-- Wallpaper Icon -->
+            <div class="flex flex-col items-center">
+              <button class="w-20 h-20 rounded-xl bg-white/20 backdrop-blur-xl shadow-xl flex flex-col items-center justify-center cursor-pointer hover:bg-white/30 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white drop-shadow-md" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                <span class="mt-2 text-xs text-white drop-shadow-md">Wallpaper</span>
+              </button>
+            </div>
+            
+            <!-- Guest Note -->
+            <div class="flex flex-col items-center">
+              <button class="w-20 h-20 rounded-xl bg-white/20 backdrop-blur-xl shadow-xl flex flex-col items-center justify-center cursor-pointer hover:bg-white/30 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white drop-shadow-md" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+                </svg>
+                <span class="mt-2 text-xs text-white drop-shadow-md">Guest Note</span>
+              </button>
+            </div>
+            
+            <!-- My iPod -->
+            <div class="flex flex-col items-center">
+              <button class="w-32 h-60 relative rounded-xl bg-transparent flex items-center justify-center cursor-pointer hover:scale-105 transition-transform">
+                <img src="/public/images/iPod black new version.png" alt="My iPod" class="h-full w-auto object-contain" />
+                <span class="absolute -bottom-6 text-sm text-white drop-shadow-md">My iPod</span>
+              </button>
+            </div>
+            
+            <!-- Share Playlist -->
+            <div class="flex flex-col items-center">
+              <button class="w-20 h-20 rounded-xl bg-white/20 backdrop-blur-xl shadow-xl flex flex-col items-center justify-center cursor-pointer hover:bg-white/30 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white drop-shadow-md" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+                </svg>
+                <span class="mt-2 text-xs text-white drop-shadow-md">Share Playlist</span>
+              </button>
+            </div>
+            
+            <!-- Post Playlist -->
+            <div class="flex flex-col items-center">
+              <button class="w-20 h-20 rounded-xl bg-white/20 backdrop-blur-xl shadow-xl flex flex-col items-center justify-center cursor-pointer hover:bg-white/30 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white drop-shadow-md" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
+                </svg>
+                <span class="mt-2 text-xs text-white drop-shadow-md">Post Playlist</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>
-      
-      <!-- Cover Flow Modal -->
-      <div id="coverFlowModal" class="fixed inset-0 bg-black/90 hidden flex flex-col items-center justify-center z-50">
-        <div class="p-4 flex justify-between items-center w-full">
-          <div class="w-1/3">
-            <p class="text-gray-400 text-sm">Track 1 of 4</p>
-          </div>
-          
-          <div class="w-1/3 flex justify-center">
-            <button id="closeCoverFlow" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-          </div>
-          
-          <div class="w-1/3"></div>
-        </div>
-        
-        <div class="coverflow my-12">
-          <div class="album prev" style="background-image: url('https://images.unsplash.com/photo-1445985543470-41fba5c3144a?w=400&h=400&fit=crop');"></div>
-          <div class="album current" style="background-image: url('https://images.unsplash.com/photo-1500462918059-b1a0cb512f1d?w=400&h=400&fit=crop');"></div>
-          <div class="album next" style="background-image: url('https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=400&h=400&fit=crop');"></div>
-        </div>
-        
-        <div class="text-center my-4">
-          <h3 class="text-2xl font-bold text-white">Blinding Lights</h3>
-          <p class="text-gray-400 mt-1">The Weeknd</p>
-        </div>
-        
-        <div class="flex items-center justify-center space-x-6">
-          <button class="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center text-white">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-            </svg>
-          </button>
-          <button class="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center text-white">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-            </svg>
-          </button>
-        </div>
-      </div>
-    </div>
+    </section>
   </div>
-
-  <!-- Google Login Modal -->
-  <div id="googleLoginModal" class="login-modal">
-    <div class="modal-content">
-      <div class="absolute top-4 right-4">
-        <button id="closeLoginModal" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="18" y1="6" x2="6" y2="18"></line>
-            <line x1="6" y1="6" x2="18" y2="18"></line>
-          </svg>
-        </button>
-      </div>
-      
-      <div class="text-center mb-6">
-        <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Continue with Google</h2>
-        <p class="text-gray-600 dark:text-gray-400 mt-2">
-          To save your playlist and create your page
-        </p>
-      </div>
-      
-      <div class="flex justify-center mb-6">
-        <div class="w-16 h-16 relative overflow-hidden">
-          <img id="modalIPod" src="attached_assets/iPod black new version.png" alt="Your iPod" width="64" height="64" class="object-contain">
-        </div>
-      </div>
-      
-      <p class="text-center text-gray-600 dark:text-gray-400 mb-6">
-        Your taste, playlist deserves more audience.
-      </p>
-      
-      <button
-        id="googleLoginButton"
-        class="w-full flex items-center justify-center gap-3 bg-white border border-gray-300 rounded-md py-3 px-4 hover:bg-gray-50 transition-colors"
-      >
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <g clipPath="url(#clip0_1_2)">
-            <path d="M19.999 10.2217C20.0111 9.53428 19.934 8.84788 19.8169 8.17737H10.2041V11.8884H15.8276C15.7211 12.5391 15.4814 13.162 15.1229 13.7195C14.7644 14.2771 14.2946 14.7578 13.7416 15.1328L13.722 15.257L16.7512 17.5567L16.9609 17.5772C18.8883 15.8328 19.9996 13.266 19.9996 10.2217" fill="#4285F4" />
-            <path d="M10.2042 19.9999C12.9593 19.9999 15.2724 19.111 16.9609 17.5772L13.7416 15.1331C12.8808 15.7221 11.7239 16.1333 10.2042 16.1333C8.91385 16.126 7.65863 15.7206 6.61663 14.9747C5.57464 14.2287 4.79879 13.1802 4.39915 11.9778L4.27957 11.9878L1.12973 14.3766L1.08856 14.4888C1.93689 16.1457 3.23879 17.5387 4.84869 18.512C6.45859 19.4852 8.31301 20.001 10.2046 19.9999" fill="#34A853" />
-            <path d="M4.39911 11.9777C4.17592 11.3411 4.06075 10.673 4.05819 9.99996C4.0623 9.32799 4.18026 8.66075 4.40686 8.02225L4.40115 7.8961L1.19269 5.4834L1.0884 5.51303C0.372762 6.90341 0 8.43716 0 9.99987C0 11.5626 0.372762 13.0964 1.0884 14.4868L4.39911 11.9777Z" fill="#FBBC05" />
-            <path d="M10.2042 3.86663C11.6663 3.84438 13.0804 4.37803 14.1498 5.35558L17.0296 2.59996C15.1824 0.901848 12.7344 -0.0298855 10.2042 -3.6784e-05C8.3126 -0.000477834 6.45819 0.514732 4.8483 1.48798C3.2384 2.46124 1.93649 3.85416 1.08813 5.51101L4.3994 8.02225C4.79883 6.82005 5.57467 5.77151 6.61666 5.02552C7.65866 4.27953 8.91387 3.87391 10.2042 3.86663Z" fill="#EB4335" />
-          </g>
-          <defs>
-            <clipPath id="clip0_1_2">
-              <rect width="20" height="20" fill="white" />
-            </clipPath>
-          </defs>
-        </svg>
-        <span class="text-gray-700 font-medium">Continue with Google</span>
-      </button>
-      
-      <p class="text-xs text-center text-gray-500 dark:text-gray-400 mt-4">
-        By continuing, you agree to our Terms of Service and Privacy Policy.
-      </p>
-    </div>
-  </div>
-
+  
   <script>
-    // Navigation between steps
-    document.getElementById('nextToStep2').addEventListener('click', () => {
-      document.getElementById('step1').classList.remove('active');
-      document.getElementById('step2').classList.add('active');
+    // Simulate Google login modal
+    document.querySelector('a[href="#loading"]').addEventListener('click', function(e) {
+      e.preventDefault();
+      document.getElementById('login-modal').classList.remove('hidden');
     });
     
-    document.getElementById('backToStep1').addEventListener('click', () => {
-      document.getElementById('step2').classList.remove('active');
-      document.getElementById('step1').classList.add('active');
-    });
-    
-    document.getElementById('nextToStep3').addEventListener('click', () => {
-      document.getElementById('step2').classList.remove('active');
-      document.getElementById('step3').classList.add('active');
-    });
-    
-    document.getElementById('backToStep2').addEventListener('click', () => {
-      document.getElementById('step3').classList.remove('active');
-      document.getElementById('step2').classList.add('active');
-    });
-    
-    document.getElementById('nextToStep4').addEventListener('click', () => {
-      document.getElementById('step3').classList.remove('active');
-      document.getElementById('step4').classList.add('active');
-    });
-    
-    document.getElementById('backToStep3').addEventListener('click', () => {
-      document.getElementById('step4').classList.remove('active');
-      document.getElementById('step3').classList.add('active');
-    });
-    
-    // iPod selection
-    const ipods = document.querySelectorAll('.ipod');
-    let selectedColor = null;
-    
-    ipods.forEach(ipod => {
-      ipod.addEventListener('click', () => {
-        // Remove selected class from all iPods
-        ipods.forEach(i => i.classList.remove('selected'));
-        
-        // Add selected class to clicked iPod
-        ipod.classList.add('selected');
-        
-        // Store selected color
-        selectedColor = ipod.getAttribute('data-color');
-        
-        // Update the iPod image in step 3
-        document.getElementById('selectedIPod').src = ipod.src;
-        
-        // Update the iPod image in profile
-        document.getElementById('profileIPod').src = ipod.src;
-        
-        // Update the iPod image in modal
-        document.getElementById('modalIPod').src = ipod.src;
-        
-        // Enable continue button
-        document.getElementById('nextToStep3').disabled = false;
+    // Handle iPod selection
+    const ipodOptions = document.querySelectorAll('.ipod-option');
+    ipodOptions.forEach(option => {
+      option.addEventListener('click', function() {
+        ipodOptions.forEach(opt => opt.classList.remove('selected'));
+        this.classList.add('selected');
       });
     });
     
-    // Chat service selection
-    const serviceButtons = document.querySelectorAll('.service-btn');
+    // Auto scroll to section based on hash
+    function scrollToSection() {
+      const hash = window.location.hash || '#hello';
+      const section = document.querySelector(hash);
+      if (section) {
+        section.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
     
-    serviceButtons.forEach(button => {
-      button.addEventListener('click', () => {
-        // Reset all buttons
-        serviceButtons.forEach(btn => {
-          btn.classList.remove('bg-blue-600', 'hover:bg-blue-700');
-          btn.classList.add('bg-gray-700', 'hover:bg-gray-600');
-        });
-        
-        // Highlight selected button
-        button.classList.remove('bg-gray-700', 'hover:bg-gray-600');
-        button.classList.add('bg-blue-600', 'hover:bg-blue-700');
-        
-        // Hide all chat views
-        document.getElementById('spotifyChat').classList.add('hidden');
-        document.getElementById('otherChat').classList.add('hidden');
-        
-        // Show appropriate chat view
-        if (button.textContent.trim() === 'Spotify' || button.textContent.trim() === 'Apple Music') {
-          document.getElementById('spotifyChat').classList.remove('hidden');
-        } else {
-          document.getElementById('otherChat').classList.remove('hidden');
-        }
-      });
-    });
-    
-    // Google login functionality
-    document.getElementById('showLoginModal').addEventListener('click', () => {
-      document.getElementById('googleLoginModal').classList.add('active');
-    });
-    
-    document.getElementById('submitPlaylist').addEventListener('click', () => {
-      // Show the Google login immediately after submitting playlist
-      document.getElementById('googleLoginModal').classList.add('active');
-    });
-    
-    document.getElementById('closeLoginModal').addEventListener('click', () => {
-      document.getElementById('googleLoginModal').classList.remove('active');
-    });
-    
-    document.getElementById('googleLoginButton').addEventListener('click', () => {
-      // Show loading state
-      const button = document.getElementById('googleLoginButton');
-      const originalContent = button.innerHTML;
-      button.innerHTML = '<div class="loading-spinner"></div>';
-      button.disabled = true;
-      
-      // Simulate login process
-      setTimeout(() => {
-        // Navigate directly to profile page
-        document.getElementById('step5').classList.add('active');
-        document.getElementById('step4').classList.remove('active');
-        document.getElementById('googleLoginModal').classList.remove('active');
-        
-        // Store mock auth in localStorage
-        localStorage.setItem('user', JSON.stringify({
-          id: 'user-123',
-          name: 'John Doe',
-          email: 'johndoe@example.com',
-          isAuthenticated: true
-        }));
-        
-        // Reset button
-        button.innerHTML = originalContent;
-        button.disabled = false;
-      }, 1500);
-    });
-    
-    // CoverFlow modal
-    document.getElementById('showCoverFlow').addEventListener('click', () => {
-      document.getElementById('coverFlowModal').classList.remove('hidden');
-    });
-    
-    document.getElementById('closeCoverFlow').addEventListener('click', () => {
-      document.getElementById('coverFlowModal').classList.add('hidden');
-    });
+    // Initial scroll and on hash change
+    window.addEventListener('load', scrollToSection);
+    window.addEventListener('hashchange', scrollToSection);
   </script>
 </body>
 </html>

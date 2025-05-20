@@ -1,38 +1,81 @@
-// This script will start the server on port 5000 (or the port defined in the PORT environment variable)
-// which is what Replit expects
+// Simple demo server that serves the static HTML demo
+const http = require('http');
+const fs = require('fs');
+const path = require('path');
 
-// Import required modules
-const { createServer } = require('http');
-const { parse } = require('url');
-const next = require('next');
+// Fix the image paths in the HTML file
+const demoHtml = fs.readFileSync('simple-demo.html', 'utf8')
+  .replace(/\/public\/images\//g, '/images/');
 
-// Configure the development server
-const dev = process.env.NODE_ENV !== 'production';
-const hostname = '0.0.0.0'; // Allow connections from all hosts
-const port = parseInt(process.env.PORT || '5000', 10);
+fs.writeFileSync('simple-demo.html', demoHtml);
 
-// Initialize Next.js
-const app = next({ dev, hostname, port });
-const handle = app.getRequestHandler();
-
-// Start the server
-app.prepare().then(() => {
-  console.log(`> Starting server on port ${port}...`);
+const server = http.createServer((req, res) => {
+  console.log(`Request for ${req.url}`);
   
-  createServer(async (req, res) => {
-    try {
-      // Parse the URL
-      const parsedUrl = parse(req.url, true);
-      
-      // Let Next.js handle the request
-      await handle(req, res, parsedUrl);
-    } catch (err) {
-      console.error('Error occurred handling', req.url, err);
-      res.statusCode = 500;
-      res.end('Internal Server Error');
+  // Basic routing
+  let filePath = '';
+  
+  if (req.url === '/' || req.url === '/index.html') {
+    filePath = 'simple-demo.html';
+  } else if (req.url.startsWith('/images/')) {
+    // Handle requests for static image files
+    filePath = path.join('public', req.url);
+  } else {
+    // Default to simple-demo.html for any other route
+    filePath = 'simple-demo.html';
+  }
+  
+  // Get the file extension
+  const extname = path.extname(filePath);
+  
+  // Set the content type based on the file extension
+  let contentType = 'text/html';
+  switch (extname) {
+    case '.js':
+      contentType = 'text/javascript';
+      break;
+    case '.css':
+      contentType = 'text/css';
+      break;
+    case '.json':
+      contentType = 'application/json';
+      break;
+    case '.png':
+      contentType = 'image/png';
+      break;
+    case '.jpg':
+    case '.jpeg':
+      contentType = 'image/jpeg';
+      break;
+    case '.svg':
+      contentType = 'image/svg+xml';
+      break;
+  }
+  
+  // Read the file
+  fs.readFile(filePath, (err, content) => {
+    if (err) {
+      if (err.code === 'ENOENT') {
+        // File not found
+        console.error(`File not found: ${filePath}`);
+        res.writeHead(404);
+        res.end('File not found');
+      } else {
+        // Server error
+        res.writeHead(500);
+        res.end(`Server Error: ${err.code}`);
+      }
+    } else {
+      // Success
+      res.writeHead(200, { 'Content-Type': contentType });
+      res.end(content, 'utf-8');
     }
-  }).listen(port, hostname, (err) => {
-    if (err) throw err;
-    console.log(`> Ready on http://${hostname}:${port}`);
   });
+});
+
+const PORT = 5000;
+
+server.listen(PORT, '0.0.0.0', () => {
+  console.log(`Demo server running on port ${PORT}`);
+  console.log('Open the URL shown in the Replit interface to view the demo');
 });

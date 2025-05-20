@@ -14,6 +14,11 @@ interface GoogleLoginModalProps {
 export function GoogleLoginModal({ isOpen, onClose, onSuccess }: GoogleLoginModalProps) {
   const [isLoading, setIsLoading] = useState(false)
   
+  // Get selected iPod color from localStorage
+  const ipodColor = typeof window !== 'undefined' 
+    ? localStorage.getItem('selectedIpodColor') || "black" 
+    : "black"
+  
   const handleGoogleLogin = () => {
     setIsLoading(true)
     
@@ -69,7 +74,7 @@ export function GoogleLoginModal({ isOpen, onClose, onSuccess }: GoogleLoginModa
             <div className="flex justify-center mb-6">
               <div className="w-16 h-16 relative overflow-hidden">
                 <Image 
-                  src="/images/iPod black new version.png" 
+                  src={`/attached_assets/iPod ${ipodColor}.png`}
                   alt="Your iPod" 
                   width={64} 
                   height={64} 

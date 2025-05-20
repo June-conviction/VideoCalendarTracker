@@ -2,67 +2,78 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 
-// Define the port to listen on
-const PORT = process.env.PORT || 5000;
-
 const server = http.createServer((req, res) => {
-  console.log('Request URL:', req.url);
+  // Basic routing
+  let filePath = '';
   
-  // Serve the demo HTML file for the root path
   if (req.url === '/' || req.url === '/index.html') {
-    fs.readFile(path.join(__dirname, 'simple-demo.html'), 'utf8', (err, data) => {
-      if (err) {
+    filePath = 'simple-demo.html';
+  } else if (req.url.startsWith('/public/')) {
+    // Handle requests for static files in the public directory
+    filePath = req.url.substring(1); // Remove the leading slash
+  } else {
+    // Default to simple-demo.html for any other route
+    filePath = 'simple-demo.html';
+  }
+  
+  // Get the file extension
+  const extname = path.extname(filePath);
+  
+  // Set the content type based on the file extension
+  let contentType = 'text/html';
+  switch (extname) {
+    case '.js':
+      contentType = 'text/javascript';
+      break;
+    case '.css':
+      contentType = 'text/css';
+      break;
+    case '.json':
+      contentType = 'application/json';
+      break;
+    case '.png':
+      contentType = 'image/png';
+      break;
+    case '.jpg':
+    case '.jpeg':
+      contentType = 'image/jpeg';
+      break;
+    case '.svg':
+      contentType = 'image/svg+xml';
+      break;
+  }
+  
+  // Read the file
+  fs.readFile(filePath, (err, content) => {
+    if (err) {
+      if (err.code === 'ENOENT') {
+        // File not found
+        console.error(`File not found: ${filePath}`);
+        fs.readFile('simple-demo.html', (err, content) => {
+          if (err) {
+            // If we can't even serve the demo page, return a 500
+            res.writeHead(500);
+            res.end('Error loading the demo page');
+            return;
+          }
+          res.writeHead(200, { 'Content-Type': 'text/html' });
+          res.end(content, 'utf-8');
+        });
+      } else {
+        // Server error
         res.writeHead(500);
-        res.end('Error loading the demo page');
-        return;
+        res.end(`Server Error: ${err.code}`);
       }
-      res.writeHead(200, { 'Content-Type': 'text/html' });
-      res.end(data);
-    });
-    return;
-  }
-  
-  // Handle requests for iPod images
-  if (req.url.startsWith('/attached_assets/')) {
-    const imagePath = path.join(__dirname, req.url);
-    
-    // Check if the file exists
-    fs.access(imagePath, fs.constants.F_OK, (err) => {
-      if (err) {
-        res.writeHead(404);
-        res.end('Image not found');
-        return;
-      }
-      
-      // Serve the image
-      fs.readFile(imagePath, (err, data) => {
-        if (err) {
-          res.writeHead(500);
-          res.end('Error loading image');
-          return;
-        }
-        
-        const ext = path.extname(imagePath).toLowerCase();
-        let contentType = 'image/png';
-        
-        if (ext === '.jpg' || ext === '.jpeg') {
-          contentType = 'image/jpeg';
-        }
-        
-        res.writeHead(200, { 'Content-Type': contentType });
-        res.end(data);
-      });
-    });
-    return;
-  }
-  
-  // Default 404 response for any other paths
-  res.writeHead(404);
-  res.end('Not found');
+    } else {
+      // Success
+      res.writeHead(200, { 'Content-Type': contentType });
+      res.end(content, 'utf-8');
+    }
+  });
 });
 
-// Start the server
-server.listen(PORT, () => {
-  console.log(`Demo server running on port ${PORT}`);
-  console.log(`Open http://localhost:${PORT} in your browser`);
+const PORT = process.env.PORT || 5000;
+
+server.listen(PORT, '0.0.0.0', () => {
+  console.log(`Demo server running on http://localhost:${PORT}`);
 });
