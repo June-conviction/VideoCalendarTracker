@@ -128,7 +128,8 @@
 
 /* Cover Flow Animation */
 .coverflow {
-  @apply relative perspective-1000;
+  position: relative;
+  perspective: 1000px;
 }
 
 .coverflow-item {

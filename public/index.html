@@ -36,23 +36,23 @@
             
             <div class="ipod-grid">
                 <div class="ipod-option" data-color="black" onclick="selectIpod('black')">
-                    <img src="/images/ipod-black.png" alt="Black iPod" class="ipod-image">
+                    <img src="/images/iPod black new version.png" alt="Black iPod" class="ipod-image">
                     <span class="ipod-name" style="color: #a0aec0;">Black</span>
                 </div>
                 <div class="ipod-option" data-color="silver" onclick="selectIpod('silver')">
-                    <img src="/images/ipod-silver.png" alt="Silver iPod" class="ipod-image">
+                    <img src="/images/iPod silver.png" alt="Silver iPod" class="ipod-image">
                     <span class="ipod-name" style="color: #e2e8f0;">Silver</span>
                 </div>
                 <div class="ipod-option" data-color="blue" onclick="selectIpod('blue')">
-                    <img src="/images/ipod-blue.png" alt="Blue iPod" class="ipod-image">
+                    <img src="/images/iPod blue.png" alt="Blue iPod" class="ipod-image">
                     <span class="ipod-name" style="color: #4299e1;">Blue</span>
                 </div>
                 <div class="ipod-option" data-color="red" onclick="selectIpod('red')">
-                    <img src="/images/ipod-red.png" alt="Red iPod" class="ipod-image">
+                    <img src="/images/iPod red.png" alt="Red iPod" class="ipod-image">
                     <span class="ipod-name" style="color: #f56565;">Red</span>
                 </div>
                 <div class="ipod-option" data-color="yellow" onclick="selectIpod('yellow')">
-                    <img src="/images/ipod-yellow.png" alt="Yellow iPod" class="ipod-image">
+                    <img src="/images/iPod yellow.png" alt="Yellow iPod" class="ipod-image">
                     <span class="ipod-name" style="color: #ecc94b;">Yellow</span>
                 </div>
             </div>
@@ -235,9 +235,24 @@
         function selectIpod(color) {
             selectedColor = color;
             
-            // Update the selected iPod section
+            // Update the selected iPod section with authentic images
             const selectedWrapper = document.getElementById("selected-ipod-wrapper");
-            selectedWrapper.innerHTML = `<img src="/images/ipod-${color}.png" alt="${color} iPod" class="ipod-image">`;
+            
+            // Use the correct image path based on color
+            let imagePath = "";
+            if (color === "black") {
+                imagePath = "/images/iPod black new version.png";
+            } else if (color === "silver") {
+                imagePath = "/images/iPod silver.png";
+            } else if (color === "blue") {
+                imagePath = "/images/iPod blue.png";
+            } else if (color === "red") {
+                imagePath = "/images/iPod red.png";
+            } else if (color === "yellow") {
+                imagePath = "/images/iPod yellow.png";
+            }
+            
+            selectedWrapper.innerHTML = `<img src="${imagePath}" alt="${color} iPod" class="ipod-image">`;
             
             document.getElementById("selected-ipod-text").textContent = `${color.charAt(0).toUpperCase() + color.slice(1)} iPod Selected`;
             
