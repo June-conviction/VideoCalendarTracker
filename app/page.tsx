@@ -78,7 +78,20 @@ export default function Home() {
   // Handle playlist submission
   const handleSubmitPlaylist = (e: React.FormEvent) => {
     e.preventDefault()
+    
+    // In a real app, this would submit the playlist data to the backend
+    // and then redirect to the profile page after login
+    
+    // For demo purposes, we'll just show the CoverFlow view first
     setStep("coverflow")
+    
+    // After a short delay, we'd normally redirect to login/profile
+    // In a real app, this would be handled with proper authentication
+    setTimeout(() => {
+      // Using window.location for client-side navigation
+      // In a production app, we'd use Next.js router
+      // window.location.href = "/profile"
+    }, 3000)
   }
   
   // Handle track navigation
@@ -299,10 +312,20 @@ export default function Home() {
               
               <button
                 type="submit"
-                className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors font-medium"
+                className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors font-medium mb-4"
               >
                 Create iPod Experience
               </button>
+              
+              <div className="flex items-center justify-center gap-2 mt-2">
+                <span className="text-gray-400">Your taste deserves more audience.</span>
+                <a 
+                  href="/profile" 
+                  className="text-blue-400 hover:text-blue-300 underline"
+                >
+                  Continue with Google
+                </a>
+              </div>
             </form>
           </motion.div>
         )}

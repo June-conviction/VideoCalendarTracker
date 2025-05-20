@@ -1,0 +1,120 @@
+아래에 **타 유저 vs 본인 유저 페이지 접근 권한**을 더 명확히 명시한, **Replit 전달용 프롬트 최종본**을 작성해줄게.
+이걸 그대로 복사해서 Replit에 전달하면 가장 효과적으로 작업이 진행될 거야.
+
+---
+
+# 🚀 **LinkPlaylist 서비스 개발 요청**
+
+## 📍 **서비스 개념**
+
+LinkPlaylist는 사람들이 Linktree나 Instagram Bio에 단순히 Spotify 또는 Apple Music 링크를 붙이는 방식을 바꿔, 각자의 음악 취향과 개성을 **나만의 개인화된 "iPod 스타일 플레이리스트 페이지"** 로 꾸며서 공유할 수 있게 하는 서비스입니다.
+
+즉, 유저는 **자신만의 iPod 페이지를 통해 멋지고 재치 있게 음악 취향을 표현**하고, 더 많은 사람들에게 어필할 수 있습니다.
+
+---
+
+## 📍 **서비스 유저 흐름**
+
+### ✅ **최초 방문자 (First-time User)**
+
+* 메인 화면:
+
+  * **Make your own page** 클릭 → "hello" 화면 등장
+  * 원하는 **iPod Nano 모델** 선택
+  * 사용 중인 음악 스트리밍 서비스 선택 질문
+
+    * **Spotify/Apple Music** 선택 시:
+
+      * 플레이리스트 URL 입력 요청
+    * **다른 플랫폼** 선택 시:
+
+      * 안내 메시지: "My bad, we're currently Apple Music and Spotify friendly."
+
+* 플레이리스트 URL 입력 후:
+
+  * **Submit** 클릭
+  * 메시지 표시: **"Your taste, playlist deserves more audience."**
+  * **Google 로그인 요청** 팝업 등장 ("Continue with Google in order to save your page")
+
+### ✅ **기존 방문자 (Returning User)**
+
+* 메인 화면에서 **Already a member?** 클릭
+
+  * **Google 로그인 요청** 팝업 등장 ("Continue with Google in order to save your page")
+
+---
+
+## 📍 **로그인 후 유저 페이지 화면 구성 및 기능**
+
+* 유저가 선택한 **iPod Nano** 스타일 개인 페이지 제공
+
+* 개인 페이지 내 **My iPod**에서 본인의 플레이리스트 확인 가능
+
+* **iPod 클릭 시**:
+
+  * 확대된 iPod 이미지 제공
+  * Cover Flow 형태의 플레이리스트 보여줌
+  * **플레이리스트 소유자만 삭제 버튼 표시**
+
+* **햄버거 메뉴 클릭 시**, 좌측 사이드 메뉴 등장:
+
+  * **Make my iPod** (새로운 페이지 제작 → 최초 유저 화면으로 이동)
+  * **Log in** (Google 로그인)
+  * **Contact**
+
+---
+
+## 📍 **유저 페이지 접근 정책 (Owner vs Visitor)**
+
+| 기능                                       | 페이지 소유자(Owner) | 타 유저 방문자(Visitor) |
+| ---------------------------------------- | -------------- | ----------------- |
+| iPod 페이지 보기                              | ✅ 가능           | ✅ 가능              |
+| Cover Flow 플레이리스트 보기                     | ✅ 가능           | ✅ 가능              |
+| **플레이리스트 삭제 버튼**                         | ✅ 노출 및 삭제 가능   | ❌ 미노출             |
+| 햄버거 메뉴 (Make my iPod / Log in / Contact) | ✅ 노출           | ✅ 노출              |
+
+---
+
+## 📍 **데이터 관리 명세 (Supabase)**
+
+다음 3가지 테이블을 통해 데이터를 관리합니다.
+
+* **`auth.users`** (기본 Supabase OAuth 사용)
+* **`playlists`**: 유저의 플레이리스트 정보 관리
+
+  * 주요 컬럼: `id`, `user_id`, `playlist_url`, `platform`, `playlist_title`, `playlist_descr`, `playlist_image`, `creator`
+* **`user_follow`**: 팔로우 관계 관리
+
+  * 주요 컬럼: `id`, `follower`, `following`, `status`, `blocked_by`, `created_at`
+
+---
+
+## 📍 **기능별 구체적인 개발 요청**
+
+### ✅ **1. Google 로그인 기능 구현 (OAuth)**
+
+* **최초/기존 유저 로그인 구분**
+* Google OAuth 로그인 → Supabase (`auth.users`) 데이터 저장
+* 로그인 시 `access_token`은 localStorage에 저장 후 활용 (bubble.io에서 제공한 코드 참고)
+
+### ✅ **2. Spotify 플레이리스트 URL 처리**
+
+* 프론트에서 입력된 URL → Supabase (`playlists`) 테이블에 저장
+* Spotify 메타데이터 추출 코드 (제공된 코드 참고, 선택적 활용)
+
+### ✅ **3. Supabase DB 연동**
+
+* `playlists` 테이블의 CRUD 기능 구현
+* `user_follow` 테이블의 팔로우 관계 기능 관리
+
+---
+
+## 📍 **첨부 파일 안내 (코드 제공)**
+
+* 프론트엔드 코드 (`background path2` zip 파일)
+* Spotify 데이터 관리 코드 (`Supabase Spotify` 관련 zip 파일)
+* bubble.io에서 사용한 로그인 및 Supabase 관련 JavaScript 코드 포함
+
+---
+
+이 문서를 통해 LinkPlaylist 서비스 개발을 명확히 이해하고 효율적으로 진행해 주세요! 🚀✨
