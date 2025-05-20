@@ -56,9 +56,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const currentPath = window.location.pathname;
       localStorage.setItem("auth_redirect", currentPath);
       
-      // Use the custom domain for production or origin for development
-      const customDomain = import.meta.env.VITE_SITE_URL || "https://drop.linkplaylist.xyz";
-      const redirectTo = `${customDomain}/callback`;
+      // Always use the current origin for the redirectTo
+      // This helps avoid cross-origin issues
+      const currentOrigin = window.location.origin;
+      const redirectTo = `${currentOrigin}/callback`;
       
       console.log("Using redirect URL:", redirectTo);
       
@@ -66,10 +67,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         provider: 'google',
         options: { 
           redirectTo,
-          queryParams: {
-            access_type: 'offline',
-            prompt: 'consent'
-          }
         },
       });
 
