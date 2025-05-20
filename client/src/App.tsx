@@ -5,6 +5,7 @@ import ServiceSelectionPage from "@/pages/ServiceSelectionPage";
 import PlaylistUrlPage from "@/pages/PlaylistUrlPage";
 import LoadingPage from "@/pages/LoadingPage";
 import IpodPage from "@/pages/IpodPage";
+import CallbackPage from "@/pages/CallbackPage";
 import NotFound from "@/pages/not-found";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -21,6 +22,8 @@ function App() {
           <Route path="/playlist-url" component={PlaylistUrlPage} />
           <Route path="/loading" component={LoadingPage} />
           <Route path="/ipod/:id" component={IpodPage} />
+          <Route path="/auth/callback" component={CallbackPage} />
+          <Route path="/callback" component={CallbackPage} />
           <Route component={NotFound} />
         </Switch>
       </main>
