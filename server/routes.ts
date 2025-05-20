@@ -114,6 +114,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Create HTTP server
   const httpServer = createServer(app);
 
+  // Health check endpoint
+  app.get('/api/health', (_req, res) => {
+    res.status(200).send('OK');
+  });
+
   // Get a playlist by ID
   app.get('/api/playlists/:id', async (req: Request, res: Response) => {
     try {
