@@ -1,38 +1,51 @@
-// This is the main entry file that will be executed by Replit
-// It will start the Next.js application and ensure it listens on port 5000
+const http = require('http');
+const fs = require('fs');
+const path = require('path');
 
-const { createServer } = require('http');
-const { parse } = require('url');
-const next = require('next');
-
-const dev = process.env.NODE_ENV !== 'production';
-const hostname = '0.0.0.0'; // Allow connections from all hosts
-const port = parseInt(process.env.PORT || '5000', 10);
-
-console.log(`Starting server on port ${port}...`);
-
-// Initialize Next.js
-const app = next({ dev, hostname, port });
-const handle = app.getRequestHandler();
+// Create a simple HTTP server
+const server = http.createServer((req, res) => {
+  // Handle requests
+  if (req.url === '/' || req.url === '/index.html') {
+    // Serve the HTML demo
+    fs.readFile('simple-demo.html', (err, data) => {
+      if (err) {
+        res.writeHead(500);
+        res.end('Error loading demo page');
+        return;
+      }
+      res.writeHead(200, { 'Content-Type': 'text/html' });
+      res.end(data);
+    });
+  } 
+  else if (req.url.startsWith('/images/')) {
+    // Serve images from the public directory
+    const imagePath = path.join('public', req.url);
+    fs.readFile(imagePath, (err, data) => {
+      if (err) {
+        res.writeHead(404);
+        res.end('Image not found');
+        return;
+      }
+      res.writeHead(200, { 'Content-Type': 'image/png' });
+      res.end(data);
+    });
+  }
+  else {
+    // Default response for other paths
+    fs.readFile('simple-demo.html', (err, data) => {
+      if (err) {
+        res.writeHead(500);
+        res.end('Error loading demo page');
+        return;
+      }
+      res.writeHead(200, { 'Content-Type': 'text/html' });
+      res.end(data);
+    });
+  }
+});
 
 // Start the server
-app.prepare().then(() => {
-  console.log(`Next.js app prepared, starting HTTP server...`);
-  
-  createServer(async (req, res) => {
-    try {
-      // Parse the URL
-      const parsedUrl = parse(req.url, true);
-      
-      // Let Next.js handle the request
-      await handle(req, res, parsedUrl);
-    } catch (err) {
-      console.error('Error occurred handling', req.url, err);
-      res.statusCode = 500;
-      res.end('Internal Server Error');
-    }
-  }).listen(port, hostname, (err) => {
-    if (err) throw err;
-    console.log(`> Ready on http://${hostname}:${port}`);
-  });
+const PORT = 5000;
+server.listen(PORT, '0.0.0.0', () => {
+  console.log(`Server is running on port ${PORT}`);
 });

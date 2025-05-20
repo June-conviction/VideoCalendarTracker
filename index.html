@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LinkPlaylist - iPod Playlist Experience</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #000;
+      color: #fff;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    header {
+      text-align: center;
+      padding: 20px 0;
+      margin-bottom: 30px;
+    }
+    
+    h1 {
+      font-size: 48px;
+      background: linear-gradient(45deg, #ff6b6b, #5e60ce, #64dfdf, #ffbe0b);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin: 0;
+    }
+    
+    .subtitle {
+      font-size: 18px;
+      color: #ccc;
+      margin-top: 10px;
+    }
+    
+    .workflow {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+      margin-bottom: 50px;
+    }
+    
+    .step {
+      width: 300px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    
+    .step:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+    }
+    
+    .step-number {
+      display: inline-block;
+      width: 30px;
+      height: 30px;
+      background: linear-gradient(45deg, #ff6b6b, #5e60ce);
+      border-radius: 50%;
+      text-align: center;
+      line-height: 30px;
+      margin-right: 10px;
+    }
+    
+    .step h3 {
+      display: flex;
+      align-items: center;
+      margin-top: 0;
+    }
+    
+    .step-img {
+      width: 100%;
+      height: 180px;
+      background-color: rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      margin: 15px 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    
+    .step-img img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+    
+    .ipod-selection {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 15px 0;
+      justify-content: center;
+    }
+    
+    .ipod-option {
+      width: 55px;
+      height: 55px;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: transform 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .ipod-option:hover {
+      transform: scale(1.1);
+    }
+    
+    .ipod-black { background-color: #000; border: 2px solid #444; }
+    .ipod-silver { background-color: #ccc; border: 2px solid #eee; }
+    .ipod-blue { background-color: #3b82f6; border: 2px solid #60a5fa; }
+    .ipod-red { background-color: #ef4444; border: 2px solid #f87171; }
+    .ipod-yellow { background-color: #eab308; border: 2px solid #facc15; }
+    
+    .services {
+      display: flex;
+      gap: 10px;
+      margin: 15px 0;
+    }
+    
+    .service-btn {
+      padding: 8px 12px;
+      border-radius: 5px;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+      flex: 1;
+    }
+    
+    .spotify { background-color: #1DB954; color: white; }
+    .apple { background-color: #FC3C44; color: white; }
+    .others { background-color: #404040; color: white; }
+    
+    .url-input {
+      width: 100%;
+      padding: 10px;
+      border-radius: 5px;
+      background-color: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: white;
+      margin: 15px 0;
+    }
+    
+    .loading {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 15px 0;
+    }
+    
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      border-top-color: #3b82f6;
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    .profile {
+      background: url('https://images.unsplash.com/photo-1691252163653-5ba40ae7bede') center/cover;
+      height: 180px;
+      border-radius: 8px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .desktop-icons {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      display: flex;
+      gap: 15px;
+    }
+    
+    .icon {
+      width: 40px;
+      height: 40px;
+      background-color: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(4px);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+    
+    .demo-btn {
+      background: linear-gradient(45deg, #3b82f6, #8b5cf6);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 5px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform 0.2s;
+      margin-top: 20px;
+      display: block;
+      margin: 40px auto;
+    }
+    
+    .demo-btn:hover {
+      transform: scale(1.05);
+    }
+    
+    .login-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.8);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+    }
+    
+    .modal-content {
+      background-color: white;
+      padding: 30px;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 400px;
+      color: #333;
+      position: relative;
+    }
+    
+    .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: none;
+      border: none;
+      font-size: 18px;
+      cursor: pointer;
+      color: #666;
+    }
+    
+    .google-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      background-color: white;
+      margin-top: 20px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>LinkPlaylist</h1>
+      <div class="subtitle">Transform your playlists into nostalgic iPod experiences</div>
+    </header>
+    
+    <div class="workflow">
+      <div class="step">
+        <h3><span class="step-number">1</span> Hello</h3>
+        <p>A welcoming splash screen with a colorful greeting.</p>
+        <div class="step-img">
+          <h2 style="font-size: 42px; background: linear-gradient(45deg, #ff6b6b, #5e60ce, #64dfdf, #ffbe0b); -webkit-background-clip: text; background-clip: text; color: transparent;">hello</h2>
+        </div>
+      </div>
+      
+      <div class="step">
+        <h3><span class="step-number">2</span> Select iPod</h3>
+        <p>Choose your iPod Nano color from multiple options.</p>
+        <div class="ipod-selection">
+          <div class="ipod-option ipod-black" title="Black"></div>
+          <div class="ipod-option ipod-silver" title="Silver"></div>
+          <div class="ipod-option ipod-blue" title="Blue"></div>
+          <div class="ipod-option ipod-red" title="Red"></div>
+          <div class="ipod-option ipod-yellow" title="Yellow"></div>
+        </div>
+        <div class="step-img">
+          <img src="./public/images/iPod black new version.png" alt="Black iPod" style="height: 100%;">
+        </div>
+      </div>
+      
+      <div class="step">
+        <h3><span class="step-number">3</span> Select Service</h3>
+        <p>Choose your music streaming platform.</p>
+        <div class="services">
+          <button class="service-btn spotify">Spotify</button>
+          <button class="service-btn apple">Apple Music</button>
+        </div>
+        <button class="service-btn others" style="width: 100%">Others</button>
+      </div>
+      
+      <div class="step">
+        <h3><span class="step-number">4</span> Submit Playlist</h3>
+        <p>Paste your playlist URL to create your iPod experience.</p>
+        <input type="text" class="url-input" placeholder="https://open.spotify.com/playlist/...">
+        <button class="demo-btn" style="margin: 10px 0;" onclick="showLoginModal()">Create iPod Experience</button>
+      </div>
+      
+      <div class="step">
+        <h3><span class="step-number">5</span> Loading</h3>
+        <p>Watch as we process your playlist data.</p>
+        <div class="loading">
+          <div class="spinner"></div>
+          <p>Creating your iPod experience...</p>
+          <div style="width: 100%; height: 8px; background-color: rgba(255, 255, 255, 0.1); border-radius: 4px; margin-top: 15px;">
+            <div style="width: 70%; height: 100%; background-color: #3b82f6; border-radius: 4px;"></div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="step">
+        <h3><span class="step-number">6</span> User Profile</h3>
+        <p>Your personalized iPod-themed profile page.</p>
+        <div class="profile">
+          <div class="desktop-icons">
+            <div class="icon">🎵</div>
+            <div class="icon">📝</div>
+            <div class="icon">🔄</div>
+          </div>
+          <img src="./public/images/iPod black new version.png" alt="iPod" style="height: 120px;">
+        </div>
+      </div>
+    </div>
+    
+    <button class="demo-btn" onclick="showLoginModal()">Try the Demo</button>
+  </div>
+  
+  <!-- Login Modal -->
+  <div class="login-modal" id="loginModal">
+    <div class="modal-content">
+      <button class="close-btn" onclick="hideLoginModal()">✕</button>
+      <h2 style="text-align: center; margin-top: 0;">Continue with Google</h2>
+      <p style="text-align: center; color: #666;">To save your playlist and create your page</p>
+      
+      <div style="text-align: center; margin: 20px 0;">
+        <img src="./public/images/iPod black new version.png" alt="iPod" style="height: 80px;">
+      </div>
+      
+      <p style="text-align: center; color: #666;">Your taste deserves more audience.</p>
+      
+      <button class="google-btn" onclick="simulateLogin()">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M19.999 10.2217C20.0111 9.53428 19.934 8.84788 19.8169 8.17737H10.2041V11.8884H15.8276C15.7211 12.5391 15.4814 13.162 15.1229 13.7195C14.7644 14.2771 14.2946 14.7578 13.7416 15.1328L13.722 15.257L16.7512 17.5567L16.9609 17.5772C18.8883 15.8328 19.9996 13.266 19.9996 10.2217" fill="#4285F4" />
+          <path d="M10.2042 19.9999C12.9593 19.9999 15.2724 19.111 16.9609 17.5772L13.7416 15.1331C12.8808 15.7221 11.7239 16.1333 10.2042 16.1333C8.91385 16.126 7.65863 15.7206 6.61663 14.9747C5.57464 14.2287 4.79879 13.1802 4.39915 11.9778L4.27957 11.9878L1.12973 14.3766L1.08856 14.4888C1.93689 16.1457 3.23879 17.5387 4.84869 18.512C6.45859 19.4852 8.31301 20.001 10.2046 19.9999" fill="#34A853" />
+          <path d="M4.39911 11.9777C4.17592 11.3411 4.06075 10.673 4.05819 9.99996C4.0623 9.32799 4.18026 8.66075 4.40686 8.02225L4.40115 7.8961L1.19269 5.4834L1.0884 5.51303C0.372762 6.90341 0 8.43716 0 9.99987C0 11.5626 0.372762 13.0964 1.0884 14.4868L4.39911 11.9777Z" fill="#FBBC05" />
+          <path d="M10.2042 3.86663C11.6663 3.84438 13.0804 4.37803 14.1498 5.35558L17.0296 2.59996C15.1824 0.901848 12.7344 -0.0298855 10.2042 -3.6784e-05C8.3126 -0.000477834 6.45819 0.514732 4.8483 1.48798C3.2384 2.46124 1.93649 3.85416 1.08813 5.51101L4.3994 8.02225C4.79883 6.82005 5.57467 5.77151 6.61666 5.02552C7.65866 4.27953 8.91387 3.87391 10.2042 3.86663Z" fill="#EB4335" />
+        </svg>
+        <span>Continue with Google</span>
+      </button>
+      
+      <p style="text-align: center; color: #999; font-size: 12px; margin-top: 20px;">
+        By continuing, you agree to our Terms of Service and Privacy Policy.
+      </p>
+    </div>
+  </div>
+  
+  <script>
+    // Show/hide the login modal
+    function showLoginModal() {
+      document.getElementById('loginModal').style.display = 'flex';
+    }
+    
+    function hideLoginModal() {
+      document.getElementById('loginModal').style.display = 'none';
+    }
+    
+    // Simulate login redirect
+    function simulateLogin() {
+      hideLoginModal();
+      alert('Google login simulation complete. In a real app, this would redirect to your User Profile.');
+    }
+    
+    // Make iPod options selectable
+    const ipodOptions = document.querySelectorAll('.ipod-option');
+    ipodOptions.forEach(option => {
+      option.addEventListener('click', () => {
+        ipodOptions.forEach(o => o.style.border = '2px solid transparent');
+        option.style.border = '2px solid white';
+      });
+    });
+  </script>
+</body>
+</html>
