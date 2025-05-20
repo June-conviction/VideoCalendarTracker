@@ -6,6 +6,7 @@ import IpodDevice from "@/components/ui/ipod/IpodDevice";
 import CoverFlow from "@/components/ui/ipod/CoverFlow";
 import { useAuth } from "@/lib/supabase";
 import { apiRequest } from "@/lib/queryClient";
+import { API_BASE_URL } from "@/config";
 import { useToast } from "@/hooks/use-toast";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Share2, Twitter, Facebook } from "lucide-react";
@@ -26,14 +27,14 @@ export default function IpodPage() {
 
   // Fetch playlist data
   const { data: playlist, isLoading, error } = useQuery({
-    queryKey: [`/api/playlists/${playlistId}`],
+    queryKey: [`${API_BASE_URL}/api/playlists/${playlistId}`],
     enabled: !!playlistId
   });
 
   // Delete playlist mutation
   const deleteMutation = useMutation({
     mutationFn: async () => {
-      await apiRequest("DELETE", `/api/playlists/${playlistId}`);
+      await apiRequest("DELETE", `${API_BASE_URL}/api/playlists/${playlistId}`);
     },
     onSuccess: () => {
       toast({
