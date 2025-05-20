@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
+import Image from "next/image"
 
 interface HelloSplashProps {
   onFinished: () => void
@@ -38,14 +39,14 @@ export function HelloSplash({ onFinished }: HelloSplashProps) {
             }}
             className="w-full max-w-xl flex items-center justify-center"
           >
-            <div className="flex flex-col items-center justify-center">
-              <img 
-                src="/images/Group.png" 
-                alt="Hello" 
-                className="w-56 md:w-96 h-auto mb-4"
-              />
-              <p className="text-gray-400 animate-pulse">Welcome to LinkPlaylist</p>
-            </div>
+            <Image
+              src="/images/hello.png"
+              alt="Hello"
+              width={1200}
+              height={400}
+              className="w-56 md:w-96 h-auto"
+              priority
+            />
           </motion.div>
         )}
       </AnimatePresence>

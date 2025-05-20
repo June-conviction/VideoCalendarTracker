@@ -40,18 +40,10 @@ export function IpodSelected({ color, onFinished }: IpodSelectedProps) {
             width={300}
             height={600}
             className="w-full h-auto"
+            priority
           />
         </motion.div>
       </div>
-      
-      <motion.p
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5 }}
-        className="text-lg font-medium text-white"
-      >
-        {color.charAt(0).toUpperCase() + color.slice(1)} iPod Selected
-      </motion.p>
     </div>
   )
 }

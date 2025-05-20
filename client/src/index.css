@@ -86,6 +86,47 @@
   .glass-effect {
     @apply bg-white/70 backdrop-blur-md backdrop-saturate-150 border border-white/20;
   }
+  
+  /* Background animations */
+  .animated-background {
+    @apply relative overflow-hidden;
+  }
+  
+  .animated-background::before {
+    content: "";
+    @apply absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent;
+    animation: shimmer 2s infinite;
+    transform: translateX(-100%);
+  }
+  
+  /* Floating paths background */
+  .path-background {
+    @apply absolute inset-0 pointer-events-none z-0 opacity-30;
+  }
+  
+  /* Modern button styles */
+  .modern-button {
+    @apply relative overflow-hidden rounded-full bg-gradient-to-r from-[#007AFF] to-[#00C7FF] text-white font-medium 
+           px-6 py-3 shadow-lg transform transition-all duration-300 hover:shadow-xl 
+           hover:scale-105 active:scale-95 focus:outline-none;
+  }
+  
+  .modern-button::after {
+    content: "";
+    @apply absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent;
+    animation: shimmer 2s infinite;
+    transform: translateX(-100%);
+  }
+  
+  /* Crisp shadows and highlights */
+  .crisp-shadow {
+    @apply shadow-[0_8px_30px_rgb(0,0,0,0.12)];
+  }
+  
+  .highlight-shadow {
+    @apply shadow-[0_0_15px_rgba(101,159,241,0.5)];
+  }
+}
 
   /* Cover Flow Animation */
   .coverflow {
@@ -138,7 +179,6 @@
     content: "";
     @apply absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent bg-200-100 bg-no-repeat animate-shine pointer-events-none;
   }
-}
 
 @keyframes shine {
   0% {

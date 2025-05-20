@@ -4,43 +4,12 @@ import { useState, useEffect } from "react"
 import { AnimatePresence, motion } from "framer-motion"
 import { HelloSplash } from "@/components/HelloSplash"
 import { IpodStep } from "@/components/IpodStep"
-import { IpodSelected } from "@/components/IpodSelected"
 import { ChatStep } from "@/components/ChatStep"
-import { CoverFlow } from "@/components/CoverFlow"
 
 export default function Home() {
-  const [step, setStep] = useState<"hello" | "select" | "selected" | "chat" | "playlist">("hello")
+  const [step, setStep] = useState<"hello" | "select" | "chat">("hello")
   const [selectedColor, setSelectedColor] = useState<string | null>(null)
   const [selectedService, setSelectedService] = useState<"spotify" | "apple" | "other" | null>(null)
-  const [showCoverFlow, setShowCoverFlow] = useState(false)
-  
-  // Sample tracks for demo purposes
-  const sampleTracks = [
-    {
-      id: "1",
-      title: "Blinding Lights",
-      artist: "The Weeknd",
-      image_url: "https://images.unsplash.com/photo-1619983081563-430f63602796?w=300&h=300"
-    },
-    {
-      id: "2",
-      title: "Good Days",
-      artist: "SZA",
-      image_url: "https://images.unsplash.com/photo-1558591710-4b4a1ae0f04d?w=300&h=300"
-    },
-    {
-      id: "3",
-      title: "Save Your Tears",
-      artist: "The Weeknd & Ariana Grande",
-      image_url: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=300&h=300"
-    },
-    {
-      id: "4", 
-      title: "Levitating",
-      artist: "Dua Lipa",
-      image_url: "https://images.unsplash.com/photo-1598387993281-cecf8b71a8f8?w=300&h=300"
-    }
-  ]
 
   // Ensure the viewport is properly set for mobile devices
   useEffect(() => {
@@ -56,32 +25,17 @@ export default function Home() {
 
   const handleIpodSelect = (color: string) => {
     setSelectedColor(color)
-    setStep("selected")
-  }
-  
-  const handleSelectedConfirmed = () => {
-    setStep("chat")
+    setTimeout(() => setStep("chat"), 400)
   }
 
   const handleServiceSelect = (service: "spotify" | "apple" | "other") => {
     setSelectedService(service)
-    // If user selects Spotify or Apple Music, we can proceed to playlist input
-    if (service === "spotify" || service === "apple") {
-      setStep("playlist")
-    }
+    // No transition to another step after service selection
   }
 
   const handleBackToIpod = () => {
     setSelectedColor(null)
     setStep("select")
-  }
-  
-  const handleShowCoverFlow = () => {
-    setShowCoverFlow(true)
-  }
-
-  const handleCloseCoverFlow = () => {
-    setShowCoverFlow(false)
   }
 
   return (
@@ -111,19 +65,6 @@ export default function Home() {
             <IpodStep onSelect={handleIpodSelect} selectedColor={selectedColor} />
           </motion.div>
         )}
-        
-        {step === "selected" && selectedColor && (
-          <motion.div
-            key="selected"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            className="w-full max-w-6xl px-4 py-8"
-          >
-            <IpodSelected color={selectedColor} onFinished={handleSelectedConfirmed} />
-          </motion.div>
-        )}
 
         {step === "chat" && (
           <motion.div
@@ -136,14 +77,6 @@ export default function Home() {
           >
             <ChatStep onSelect={handleServiceSelect} onBack={handleBackToIpod} />
           </motion.div>
-        )}
-        
-        {/* CoverFlow overlay */}
-        {showCoverFlow && (
-          <CoverFlow
-            tracks={sampleTracks}
-            onClose={handleCloseCoverFlow}
-          />
         )}
       </AnimatePresence>
     </main>
