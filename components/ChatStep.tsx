@@ -1,15 +1,9 @@
 "use client"
 
-import React, { useEffect, useRef, useCallback } from "react"
-import { useState } from "react"
+import { useState, useEffect, useRef } from "react"
 import { motion, AnimatePresence } from "framer-motion"
+import { ChevronLeft, Music, Apple, Disc2 } from "lucide-react"
 import { Stepper } from "./Stepper"
-import { Button } from "@/components/ui/button"
-import { ChevronLeft, Send } from "lucide-react"
-import { ChatBubble, ChatBubbleMessage } from "@/components/chat-bubble"
-
-// Helper function to generate UUID
-const uuid = () => crypto.randomUUID()
 
 interface Message {
   id: string
@@ -24,232 +18,217 @@ interface ChatStepProps {
   onBack: () => void
 }
 
-// Service Button Component
-const ServiceButton = ({ label, onClick }: { label: string; onClick: () => void }) => (
-  <button
-    onClick={onClick}
-    className="px-4 py-2 border border-white/30 rounded-full text-white hover:bg-white/10 transition-colors"
-  >
-    {label}
-  </button>
-)
-
-// URL Form component
-const UrlForm = ({ onSubmit }: { onSubmit: (url: string) => void }) => {
-  const [playlistUrl, setPlaylistUrl] = useState("")
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!playlistUrl.trim()) return
-    onSubmit(playlistUrl)
-    setPlaylistUrl("")
-  }
-
-  const handleFocus = () => {
-    window.scrollTo(0, document.body.scrollHeight)
-  }
-
+// ChatBubble components
+function ChatBubble({ 
+  variant = "received", 
+  children
+}: { 
+  variant?: "sent" | "received"
+  children: React.ReactNode 
+}) {
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="fixed inset-x-0 bottom-[calc(env(safe-area-inset-bottom,24px)+40px)] flex justify-center"
-      style={{ "--input-h": "128px" } as React.CSSProperties}
-    >
-      <div className="flex w-full max-w-xl gap-2 px-4 md:px-6">
-        <input
-          type="text"
-          value={playlistUrl}
-          onChange={(e) => setPlaylistUrl(e.target.value)}
-          placeholder="Place your playlist url here."
-          className="flex-1 h-12 rounded-xl px-4 bg-white text-black"
-          onFocus={handleFocus}
-        />
-        <button type="submit" className="w-12 h-12 rounded-full bg-[#007AFF] flex items-center justify-center">
-          <Send className="h-5 w-5 text-white" />
-        </button>
+    <div className={`flex ${variant === "sent" ? "justify-end" : "justify-start"} mb-4`}>
+      <div
+        className={`px-4 py-3 rounded-2xl max-w-[80%] ${
+          variant === "sent"
+            ? "bg-blue-500 text-white rounded-tr-none"
+            : "bg-gray-800 text-white rounded-tl-none"
+        }`}
+      >
+        {children}
       </div>
-    </form>
+    </div>
   )
 }
 
+// Typing animation component
+function TypingEffect({ text, onComplete }: { text: string; onComplete?: () => void }) {
+  const [displayText, setDisplayText] = useState("")
+  const [currentIndex, setCurrentIndex] = useState(0)
+  
+  useEffect(() => {
+    if (currentIndex < text.length) {
+      const timeout = setTimeout(() => {
+        setDisplayText(prev => prev + text[currentIndex])
+        setCurrentIndex(prev => prev + 1)
+      }, 30) // Speed of typing
+      
+      return () => clearTimeout(timeout)
+    } else if (onComplete) {
+      onComplete()
+    }
+  }, [currentIndex, text, onComplete])
+  
+  return <>{displayText}</>
+}
+
+// Main ChatStep component
 export function ChatStep({ onSelect, onBack }: ChatStepProps) {
-  const [selectedService, setSelectedService] = useState<"spotify" | "apple" | "other" | null>(null)
-  const bottomRef = useRef<HTMLDivElement>(null)
-  const chatRef = useRef<HTMLDivElement>(null)
-
-  // State for message queue, messages, and pending UI elements
-  const [queue, setQueue] = useState<Message[]>([
-    { id: uuid(), role: "bot", text: "Hi I'm linkPlaylist. Chat to me and express yourself through your playlist." },
-    { id: uuid(), role: "bot", text: "What music streaming service are you on?" },
-  ])
   const [messages, setMessages] = useState<Message[]>([])
-  const [pendingUI, setPendingUI] = useState<"serviceButtons" | "urlInput" | null>(null)
-
-  // Process queue - dequeue exactly ONE message at a time
+  const [currentTypingMessage, setCurrentTypingMessage] = useState<string | null>(null)
+  const [showServiceOptions, setShowServiceOptions] = useState(false)
+  const scrollRef = useRef<HTMLDivElement>(null)
+  
+  // Auto-scroll to the bottom when messages change
   useEffect(() => {
-    if (queue.length === 0 || messages.some((m) => m.typing)) return
-    const [next, ...rest] = queue
-    setMessages((m) => [...m, { ...next, typing: true }])
-    setQueue(rest)
-  }, [queue, messages])
-
-  // Auto-scroll to bottom when messages change
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight
+    }
+  }, [messages])
+  
+  // Initial bot welcome message
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" })
-  }, [messages, pendingUI])
-
-  // Handle typing completion
-  const handleTypingDone = useCallback((text: string) => {
-    setMessages((m) => {
-      const last = { ...m.at(-1)!, typing: false }
-      return [...m.slice(0, -1), last]
-    })
-
-    /* 1) Show service buttons after second message */
-    if (text.startsWith("What music")) {
-      setPendingUI("serviceButtons")
-    }
-
-    /* 2) Show URL input form after "Alrighty" message */
-    if (text.startsWith("Alrighty")) {
-      setTimeout(() => setPendingUI("urlInput"), 400)
-    }
+    const initialMessage = "Hi there! I'll help you set up your playlist. Which music streaming service do you use?"
+    
+    // Add with typing effect
+    setMessages([
+      {
+        id: "welcome",
+        role: "bot",
+        text: "",
+        typing: true
+      }
+    ])
+    
+    setCurrentTypingMessage(initialMessage)
+    
+    // After typing completes, show options
+    const timer = setTimeout(() => {
+      setShowServiceOptions(true)
+    }, initialMessage.length * 30 + 500)
+    
+    return () => clearTimeout(timer)
   }, [])
-
-  // Handle service selection
-  const handleService = (label: string) => {
-    let service: "spotify" | "apple" | "other"
-
-    if (label === "Spotify") {
-      service = "spotify"
-    } else if (label === "Apple Music") {
-      service = "apple"
-    } else {
-      service = "other"
+  
+  // Handle when typing completes
+  const handleTypingComplete = (id: string, text: string) => {
+    setMessages(prev => 
+      prev.map(msg => 
+        msg.id === id ? { ...msg, text, typing: false } : msg
+      )
+    )
+    setCurrentTypingMessage(null)
+  }
+  
+  // Handle selecting a service
+  const handleSelectService = (service: "spotify" | "apple" | "other") => {
+    // User message
+    const userMessage: Message = {
+      id: Date.now().toString(),
+      role: "user",
+      text: service === "spotify" 
+        ? "I use Spotify" 
+        : service === "apple" 
+          ? "I use Apple Music" 
+          : "I use another service"
     }
-
-    setSelectedService(service)
-
+    
     // Add user message
-    setMessages((m) => [...m, { id: uuid(), role: "user", text: label }])
-
-    // Queue bot responses based on service
-    if (service === "other") {
-      setQueue((q) => [
-        ...q,
-        { id: uuid(), role: "bot", text: "I'm all about music, but for now we only support Apple Music and Spotify." },
-        {
-          id: uuid(),
-          role: "bot",
-          text: "If you'd like us to support your service too, double-tap this message and drop a like 💙",
-          likeable: true,
-        },
-      ])
-    } else {
-      setQueue((q) => [...q, { id: uuid(), role: "bot", text: "Alrighty. Wanna share one of your playlist with us?" }])
-    }
-
-    // Hide buttons immediately
-    setPendingUI(null)
-
-    // Call the parent handler
-    onSelect(service)
+    setMessages(prev => [...prev, userMessage])
+    
+    // Bot response
+    setTimeout(() => {
+      const responseText = service === "spotify" 
+        ? "Great! Spotify has a huge library. Please paste your Spotify playlist link below." 
+        : service === "apple" 
+          ? "Apple Music is an excellent choice! Please paste your Apple Music playlist link below."
+          : "No problem! You can manually enter your playlist details on the next screen."
+      
+      const botMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        role: "bot",
+        text: "",
+        typing: true
+      }
+      
+      setMessages(prev => [...prev, botMessage])
+      setCurrentTypingMessage(responseText)
+      
+      // Forward to parent after some delay
+      setTimeout(() => {
+        onSelect(service)
+      }, responseText.length * 30 + 500)
+      
+    }, 500)
   }
-
-  // Handle playlist submission
-  const handleSubmitPlaylist = (url: string) => {
-    // Add user message with playlist URL
-    setMessages((m) => [...m, { id: uuid(), role: "user", text: url }])
-
-    // Queue bot response
-    setQueue((q) => [...q, { id: uuid(), role: "bot", text: "Thanks for sharing your playlist! We'll check it out." }])
-
-    // Hide URL form
-    setPendingUI(null)
-  }
-
-  // Group messages by role for speech tail logic
-  const groupedMessages = messages.reduce((acc, message, index) => {
-    const prevMessage = messages[index - 1]
-
-    if (!prevMessage || prevMessage.role !== message.role) {
-      acc.push([message])
-    } else {
-      acc[acc.length - 1].push(message)
-    }
-
-    return acc
-  }, [] as Message[][])
-
+  
   return (
-    <div className="flex flex-col items-center w-full max-w-2xl mx-auto">
-      {/* Stepper - now showing as step 2 */}
-      <Stepper currentStep={2} />
-
-      <div className="w-full">
-        {/* Back button */}
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3 }} className="mb-4">
-          <Button onClick={onBack} variant="ghost" className="text-white hover:bg-white/10 pl-2" size="sm">
-            <ChevronLeft className="mr-1 h-4 w-4" />
-            Back to iPod
-          </Button>
-        </motion.div>
-
-        {/* Chat messages */}
-        <div
-          ref={chatRef}
-          className="flex flex-col gap-4 overflow-y-auto px-4 md:px-6 pt-4"
-          style={{ paddingBottom: "var(--input-h,128px)" }}
+    <div className="flex flex-col h-full w-full">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-6">
+        <button 
+          onClick={onBack}
+          className="flex items-center text-gray-400 hover:text-white transition-colors"
         >
-          <AnimatePresence initial={false}>
-            {groupedMessages.map((group, groupIndex) => (
-              <React.Fragment key={`group-${groupIndex}`}>
-                {group.map((message, messageIndex) => (
-                  <motion.div
-                    key={`${message.id}-${messageIndex}`}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    <ChatBubble variant={message.role === "user" ? "sent" : "received"}>
-                      <ChatBubbleMessage
-                        id={message.id}
-                        variant={message.role === "user" ? "sent" : "received"}
-                        likeable={message.likeable}
-                        isLast={messageIndex === group.length - 1}
-                        isTyping={message.typing}
-                        onTypingDone={handleTypingDone}
-                      >
-                        {message.text}
-                      </ChatBubbleMessage>
-                    </ChatBubble>
-                  </motion.div>
-                ))}
-              </React.Fragment>
-            ))}
-          </AnimatePresence>
-
-          {/* Service selection buttons - only shown after second bot message */}
-          {pendingUI === "serviceButtons" && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3 }}
-              className="flex gap-3 self-end mt-2 justify-end"
-            >
-              <ServiceButton label="Spotify" onClick={() => handleService("Spotify")} />
-              <ServiceButton label="Apple Music" onClick={() => handleService("Apple Music")} />
-              <ServiceButton label="Others" onClick={() => handleService("Others")} />
-            </motion.div>
-          )}
-
-          {/* Auto-scroll reference div */}
-          <div ref={bottomRef}></div>
-        </div>
+          <ChevronLeft className="mr-1" size={20} />
+          <span>Back</span>
+        </button>
+        
+        <Stepper currentStep={2} />
       </div>
-
-      {/* URL input form - only shown after "Alrighty" message */}
-      {pendingUI === "urlInput" && <UrlForm onSubmit={handleSubmitPlaylist} />}
+      
+      {/* Chat container */}
+      <div 
+        ref={scrollRef}
+        className="flex-1 overflow-y-auto pb-4 space-y-4 mb-4"
+        style={{ maxHeight: "calc(100vh - 240px)" }}
+      >
+        {messages.map((message) => (
+          <ChatBubble key={message.id} variant={message.role === "user" ? "sent" : "received"}>
+            {message.typing && currentTypingMessage ? (
+              <TypingEffect 
+                text={currentTypingMessage} 
+                onComplete={() => handleTypingComplete(message.id, currentTypingMessage)} 
+              />
+            ) : (
+              <span>{message.text}</span>
+            )}
+          </ChatBubble>
+        ))}
+      </div>
+      
+      {/* Service selection */}
+      <AnimatePresence>
+        {showServiceOptions && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            transition={{ duration: 0.3 }}
+            className="mt-4 grid grid-cols-3 gap-4"
+          >
+            <button
+              onClick={() => handleSelectService("spotify")}
+              className="flex flex-col items-center justify-center p-4 rounded-lg bg-gray-800 hover:bg-gray-700 transition-colors"
+            >
+              <div className="w-12 h-12 rounded-full bg-[#1DB954] flex items-center justify-center mb-2">
+                <Disc2 size={24} color="white" />
+              </div>
+              <span className="text-sm font-medium">Spotify</span>
+            </button>
+            
+            <button
+              onClick={() => handleSelectService("apple")}
+              className="flex flex-col items-center justify-center p-4 rounded-lg bg-gray-800 hover:bg-gray-700 transition-colors"
+            >
+              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-pink-500 to-purple-500 flex items-center justify-center mb-2">
+                <Apple size={24} color="white" />
+              </div>
+              <span className="text-sm font-medium">Apple Music</span>
+            </button>
+            
+            <button
+              onClick={() => handleSelectService("other")}
+              className="flex flex-col items-center justify-center p-4 rounded-lg bg-gray-800 hover:bg-gray-700 transition-colors"
+            >
+              <div className="w-12 h-12 rounded-full bg-gray-600 flex items-center justify-center mb-2">
+                <Music size={24} color="white" />
+              </div>
+              <span className="text-sm font-medium">Other</span>
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   )
 }

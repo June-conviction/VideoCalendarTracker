@@ -1,7 +1,7 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { motion } from "framer-motion"
+import { useState } from "react"
+import Image from "next/image"
 import { Stepper } from "./Stepper"
 
 interface IpodStepProps {
@@ -10,108 +10,81 @@ interface IpodStepProps {
 }
 
 export function IpodStep({ onSelect, selectedColor }: IpodStepProps) {
-  const [selected, setSelected] = useState<string | null>(selectedColor)
-  const [hideOthers, setHideOthers] = useState(false)
-
-  // Reset selected state when selectedColor changes (for back button)
-  useEffect(() => {
-    setSelected(selectedColor)
-    setHideOthers(!!selectedColor)
-  }, [selectedColor])
-
-  const ipods = [
-    { color: "black", src: "/images/ipod-black.png", alt: "Black iPod nano" },
-    { color: "silver", src: "/images/ipod-silver.png", alt: "Silver iPod nano" },
-    { color: "blue", src: "/images/ipod-blue.png", alt: "Blue iPod nano" },
-    { color: "red", src: "/images/ipod-red.png", alt: "Red iPod nano" },
-    { color: "yellow", src: "/images/ipod-yellow.png", alt: "Yellow iPod nano" },
+  const [hoveredIpod, setHoveredIpod] = useState<string | null>(null)
+  
+  const ipodOptions = [
+    { id: "black", name: "Black" },
+    { id: "silver", name: "Silver" },
+    { id: "blue", name: "Blue" },
+    { id: "red", name: "Red" },
+    { id: "yellow", name: "Yellow" }
   ]
 
-  // Handle iPod selection
-  const handleSelectIpod = (color: string) => {
-    setSelected(color)
-    setHideOthers(true)
-    onSelect(color)
-  }
-
   return (
-    <div className="flex flex-col items-center w-full">
-      {/* Stepper - keeping as step 1 */}
+    <div className="flex flex-col items-center justify-center w-full">
+      {/* Stepper */}
       <Stepper currentStep={1} />
-
-      {/* Heading */}
-      <motion.h1 
-        className="text-3xl font-semibold mb-12 text-center"
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
-        Choose your iPod color
-      </motion.h1>
-
-      {/* Color Grid */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.5, delay: 0.2 }}
-        className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-6 w-full max-w-4xl mx-auto"
-      >
-        {ipods.map((ipod, index) => (
-          <motion.div
-            key={ipod.color}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{
-              opacity: hideOthers && selected !== ipod.color ? 0 : 1,
-              y: 0,
-              scale: selected === ipod.color ? 1.1 : 1,
-            }}
-            transition={{ 
-              duration: 0.4, 
-              delay: 0.1 * index,
-              ease: "easeOut" 
-            }}
+      
+      {/* Title */}
+      <h2 className="mt-8 text-2xl md:text-3xl font-bold text-center text-white">
+        Choose Your iPod
+      </h2>
+      <p className="mt-2 text-gray-400 text-center max-w-md">
+        Select your favorite color for a personalized browsing experience
+      </p>
+      
+      {/* iPod options */}
+      <div className="mt-10 grid grid-cols-2 md:grid-cols-5 gap-6 w-full max-w-4xl">
+        {ipodOptions.map((ipod) => (
+          <div
+            key={ipod.id}
             className="flex flex-col items-center"
           >
-            <motion.div
-              whileHover={!selected ? { scale: 1.05, y: -5 } : {}}
-              whileTap={!selected ? { scale: 0.98 } : {}}
-              onClick={() => !selected && handleSelectIpod(ipod.color)}
-              className={`w-full shadow-lg cursor-pointer ${selected === ipod.color ? 'ring-4 ring-blue-500 ring-opacity-70 rounded-lg' : ''}
-                transition-all duration-300`}
+            <button
+              className={`relative p-1 rounded-lg overflow-hidden transition-all duration-200 
+                ${hoveredIpod === ipod.id || selectedColor === ipod.id 
+                  ? 'ring-4 ring-opacity-70 scale-105' 
+                  : 'scale-100'}`}
+              style={{
+                ringColor: ipod.id === 'blue' ? '#4299e1' 
+                  : ipod.id === 'red' ? '#f56565' 
+                  : ipod.id === 'black' ? '#2d3748' 
+                  : ipod.id === 'yellow' ? '#ecc94b' 
+                  : '#a0aec0'
+              }}
+              onClick={() => onSelect(ipod.id)}
+              onMouseEnter={() => setHoveredIpod(ipod.id)}
+              onMouseLeave={() => setHoveredIpod(null)}
             >
-              <img
-                src={ipod.src}
-                alt={ipod.alt}
+              <Image 
+                src={`/images/ipod-${ipod.id}.png`}
+                alt={`${ipod.name} iPod Nano`}
+                width={200}
+                height={300}
                 className="w-full h-auto"
-                style={{ maxWidth: "200px" }}
               />
               
-              {/* Selected indicator */}
-              {selected === ipod.color && (
-                <motion.div 
-                  initial={{ opacity: 0, scale: 0.5 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.3, delay: 0.2 }}
-                  className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-blue-500 rounded-full p-2 z-10"
-                >
-                  <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                </motion.div>
+              {/* Overlay for selected/hovered state */}
+              {(hoveredIpod === ipod.id || selectedColor === ipod.id) && (
+                <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
               )}
-            </motion.div>
+            </button>
             
-            <motion.p
-              animate={{
-                opacity: hideOthers && selected !== ipod.color ? 0 : 1,
+            <p 
+              className="mt-3 text-center font-medium"
+              style={{
+                color: ipod.id === 'blue' ? '#4299e1' 
+                  : ipod.id === 'red' ? '#f56565' 
+                  : ipod.id === 'black' ? '#a0aec0' 
+                  : ipod.id === 'yellow' ? '#ecc94b' 
+                  : '#e2e8f0'
               }}
-              className="mt-3 capitalize font-medium"
             >
-              {ipod.color}
-            </motion.p>
-          </motion.div>
+              {ipod.name}
+            </p>
+          </div>
         ))}
-      </motion.div>
+      </div>
     </div>
   )
 }

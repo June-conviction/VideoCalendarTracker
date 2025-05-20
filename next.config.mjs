@@ -8,7 +8,11 @@ const nextConfig = {
   },
   images: {
     unoptimized: true,
+    domains: ['images.unsplash.com'],
   },
+  experimental: {
+    optimizeCss: true
+  }
 }
 
 export default nextConfig

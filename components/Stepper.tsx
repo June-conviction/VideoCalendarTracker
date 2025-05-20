@@ -1,7 +1,6 @@
 "use client"
 
-import { cn } from "@/lib/utils"
-import { CheckIcon } from "lucide-react"
+import { motion } from "framer-motion"
 
 interface StepperProps {
   currentStep: number
@@ -9,58 +8,52 @@ interface StepperProps {
 }
 
 export function Stepper({ currentStep = 1, className }: StepperProps) {
-  // Define the steps
   const steps = [
-    { id: 1, title: "Pick iPod" },
-    { id: 2, title: "Music Service" },
-    { id: 3, title: "Playlist" }
+    { id: 1, label: "Select iPod" },
+    { id: 2, label: "Choose Service" },
+    { id: 3, label: "Add Playlist" }
   ]
 
   return (
-    <div className={cn("flex w-full justify-center mt-8 mb-12", className)}>
-      <div className="relative flex items-center">
-        {steps.map((step, index) => (
+    <div className={`w-full max-w-md mx-auto px-4 ${className || ""}`}>
+      <div className="flex items-center justify-between">
+        {steps.map((step, i) => (
           <div key={step.id} className="flex items-center">
-            {/* Step indicator */}
-            <div className="relative">
-              <div 
-                className={cn(
-                  "w-8 h-8 flex items-center justify-center rounded-full text-sm font-medium transition-colors",
-                  currentStep > step.id 
-                    ? "bg-[#007AFF] text-white"
-                    : currentStep === step.id
-                      ? "bg-[#007AFF] text-white ring-4 ring-blue-100"
-                      : "bg-gray-200 text-gray-500"
-                )}
-              >
-                {currentStep > step.id ? (
-                  <CheckIcon className="w-4 h-4" />
-                ) : (
-                  step.id
-                )}
-              </div>
-              
-              {/* Step title */}
-              <span 
-                className={cn(
-                  "absolute -bottom-6 left-1/2 -translate-x-1/2 text-xs whitespace-nowrap",
-                  currentStep >= step.id ? "text-[#007AFF] font-medium" : "text-gray-500"
-                )}
-              >
-                {step.title}
-              </span>
-            </div>
-            
+            {/* Step circle */}
+            <motion.div
+              className={`flex items-center justify-center w-8 h-8 rounded-full border-2 
+              ${currentStep >= step.id ? "border-blue-500 bg-blue-500 text-white" : "border-gray-300 text-gray-400"}`}
+              animate={{
+                scale: currentStep === step.id ? [1, 1.1, 1] : 1,
+                backgroundColor: currentStep >= step.id ? "#3b82f6" : "transparent"
+              }}
+              transition={{ duration: 0.3 }}
+            >
+              {currentStep > step.id ? (
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+              ) : (
+                <span>{step.id}</span>
+              )}
+            </motion.div>
+
+            {/* Step label */}
+            <span
+              className={`hidden sm:block ml-2 text-sm ${
+                currentStep >= step.id ? "text-blue-500 font-medium" : "text-gray-400"
+              }`}
+            >
+              {step.label}
+            </span>
+
             {/* Connector line */}
-            {index < steps.length - 1 && (
-              <div 
-                className={cn(
-                  "w-12 h-0.5 mx-1",
-                  currentStep > step.id + 1 
-                    ? "bg-[#007AFF]" 
-                    : "bg-gray-200"
-                )}
-              />
+            {i < steps.length - 1 && (
+              <div
+                className={`flex-grow h-0.5 mx-4 ${
+                  currentStep > i + 1 ? "bg-blue-500" : "bg-gray-300"
+                }`}
+              ></div>
             )}
           </div>
         ))}
