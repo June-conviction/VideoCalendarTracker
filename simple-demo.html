@@ -500,14 +500,8 @@
     });
     
     document.getElementById('submitPlaylist').addEventListener('click', () => {
-      // First show the CoverFlow view briefly
-      document.getElementById('coverFlowModal').classList.remove('hidden');
-      
-      // After a short delay, show the Google login
-      setTimeout(() => {
-        document.getElementById('coverFlowModal').classList.add('hidden');
-        document.getElementById('googleLoginModal').classList.add('active');
-      }, 2000);
+      // Show the Google login immediately after submitting playlist
+      document.getElementById('googleLoginModal').classList.add('active');
     });
     
     document.getElementById('closeLoginModal').addEventListener('click', () => {
