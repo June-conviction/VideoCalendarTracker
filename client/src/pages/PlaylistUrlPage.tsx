@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { isValidPlaylistUrl } from "@/lib/utils";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
+import { API_BASE_URL } from "@/config";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertTriangle } from "lucide-react";
 
