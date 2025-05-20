@@ -51,16 +51,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const signIn = async () => {
     try {
       setLoading(true);
-      // Get domains for OAuth
-      const domains = import.meta.env.VITE_REPLIT_DOMAINS
-        ? import.meta.env.VITE_REPLIT_DOMAINS.split(',')[0]
-        : window.location.origin;
-
-      const redirectTo = `${domains}/auth/callback`;
+      
+      // Store the current page in localStorage to redirect back after auth
+      const currentPath = window.location.pathname;
+      localStorage.setItem("auth_redirect", currentPath);
+      
+      // Use the custom domain for production or origin for development
+      const customDomain = import.meta.env.VITE_SITE_URL || "https://drop.linkplaylist.xyz";
+      const redirectTo = `${customDomain}/callback`;
+      
+      console.log("Using redirect URL:", redirectTo);
       
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
-        options: { redirectTo },
+        options: { 
+          redirectTo,
+          queryParams: {
+            access_type: 'offline',
+            prompt: 'consent'
+          }
+        },
       });
 
       if (error) {

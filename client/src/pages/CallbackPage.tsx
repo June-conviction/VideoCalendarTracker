@@ -1,26 +1,50 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useLocation } from "wouter";
 import { useAuth } from "@/lib/supabase";
+import { supabase } from "@/lib/supabase";
 
 export default function CallbackPage() {
   const [, navigate] = useLocation();
+  const { user } = useAuth();
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // This page will be hit after the OAuth redirect
-    // Supabase will handle the token automatically
+    const handleCallback = async () => {
+      try {
+        // Log the URL params for debugging
+        console.log("Callback URL:", window.location.href);
+        
+        // Get hash fragment or search params
+        const hashParams = window.location.hash;
+        const searchParams = window.location.search;
+        
+        console.log("Hash params:", hashParams);
+        console.log("Search params:", searchParams);
+        
+        // Manually handle the OAuth response in case the automatic handling fails
+        if (hashParams || searchParams) {
+          console.log("Processing OAuth callback...");
+        }
+        
+        // Wait a bit to ensure auth state is processed by Supabase
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        
+        // Check if the user is now authenticated
+        const { data } = await supabase.auth.getSession();
+        console.log("Session data:", data.session ? "Session exists" : "No session");
+        
+        // Get the redirect URL from localStorage if it exists
+        const redirectUrl = localStorage.getItem("auth_redirect") || "/";
+        console.log("Redirecting to:", redirectUrl);
+        
+        navigate(redirectUrl);
+      } catch (err) {
+        console.error("Error in callback:", err);
+        setError((err as Error).message);
+      }
+    };
     
-    // Let's just show a message that we're processing the login
-    console.log("Processing OAuth callback...");
-    
-    // After a brief timeout, redirect to the home page
-    // The auth state should be updated automatically by Supabase
-    const timer = setTimeout(() => {
-      // Get the redirect URL from localStorage if it exists
-      const redirectUrl = localStorage.getItem("auth_redirect") || "/";
-      navigate(redirectUrl);
-    }, 1000);
-    
-    return () => clearTimeout(timer);
+    handleCallback();
   }, [navigate]);
 
   return (
