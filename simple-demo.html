@@ -1,14 +1,3 @@
-// This is a simple static file server to demonstrate the LinkPlaylist interface
-
-const http = require('http');
-const fs = require('fs');
-const path = require('path');
-
-// Define the port to listen on
-const PORT = process.env.PORT || 5000;
-
-// Create a simple HTML page that showcases the app's features
-const demoHTML = `
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -20,6 +9,7 @@ const demoHTML = `
     body {
       background-color: #000;
       color: #fff;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
     }
     .hello {
       font-family: 'Helvetica', sans-serif;
@@ -121,6 +111,42 @@ const demoHTML = `
       z-index: 5;
       opacity: 0.7;
     }
+    .login-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      background-color: rgba(0, 0, 0, 0.5);
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+    .login-modal.active {
+      display: flex;
+    }
+    .modal-content {
+      position: relative;
+      background-color: white;
+      border-radius: 0.5rem;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+      max-width: 28rem;
+      width: 100%;
+      padding: 1.5rem;
+    }
+    .dark .modal-content {
+      background-color: #1f2937;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    .loading-spinner {
+      height: 1.25rem;
+      width: 1.25rem;
+      border-radius: 9999px;
+      border-top: 2px solid #1f2937;
+      border-bottom: 2px solid #1f2937;
+      animation: spin 0.75s linear infinite;
+    }
   </style>
 </head>
 <body class="min-h-screen flex items-center justify-center">
@@ -140,11 +166,11 @@ const demoHTML = `
     <div id="step2" class="step">
       <h2 class="text-3xl font-bold text-center mb-8">Pick your iPod Nano</h2>
       <div class="ipod-container mb-10">
-        <img src="/images/iPod black new version.png" alt="Black iPod" data-color="black" class="ipod">
-        <img src="/images/iPod silver.png" alt="Silver iPod" data-color="silver" class="ipod">
-        <img src="/images/iPod blue.png" alt="Blue iPod" data-color="blue" class="ipod">
-        <img src="/images/iPod red.png" alt="Red iPod" data-color="red" class="ipod">
-        <img src="/images/iPod yellow.png" alt="Yellow iPod" data-color="yellow" class="ipod">
+        <img src="attached_assets/iPod black new version.png" alt="Black iPod" data-color="black" class="ipod">
+        <img src="attached_assets/iPod silver.png" alt="Silver iPod" data-color="silver" class="ipod">
+        <img src="attached_assets/iPod blue.png" alt="Blue iPod" data-color="blue" class="ipod">
+        <img src="attached_assets/iPod red.png" alt="Red iPod" data-color="red" class="ipod">
+        <img src="attached_assets/iPod yellow.png" alt="Yellow iPod" data-color="yellow" class="ipod">
       </div>
       <div class="flex justify-center">
         <button id="backToStep1" class="px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 mr-4 transition-colors">
@@ -160,7 +186,7 @@ const demoHTML = `
     <div id="step3" class="step">
       <h2 class="text-3xl font-bold text-center mb-8">Your iPod is ready!</h2>
       <div class="flex justify-center mb-10">
-        <img id="selectedIPod" src="/images/iPod black new version.png" alt="Selected iPod" class="h-80">
+        <img id="selectedIPod" src="attached_assets/iPod black new version.png" alt="Selected iPod" class="h-80">
       </div>
       <div class="flex justify-center">
         <button id="backToStep2" class="px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 mr-4 transition-colors">
@@ -202,13 +228,18 @@ const demoHTML = `
             </div>
             
             <div class="flex justify-end">
-              <button id="nextToStep5" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">Submit</button>
+              <button id="submitPlaylist" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">Submit</button>
+            </div>
+            
+            <div class="mt-6 text-center">
+              <p class="text-gray-400">Your taste deserves more audience.</p>
+              <button id="showLoginModal" class="text-blue-400 hover:text-blue-300 underline mt-1">Continue with Google</button>
             </div>
           </div>
           
           <div id="otherChat" class="hidden">
             <div class="bg-gray-800 rounded-lg p-4 mb-4 self-start max-w-[80%]">
-              <p class="text-white">Sorry, we currently only support Spotify and Apple Music playlists.</p>
+              <p class="text-white">My bad, we're currently Apple Music and Spotify friendly.</p>
             </div>
           </div>
         </div>
@@ -254,7 +285,7 @@ const demoHTML = `
           </div>
           
           <div id="showCoverFlow" class="desktop-icon">
-            <img id="profileIPod" src="/images/iPod black new version.png" alt="My iPod" class="h-12">
+            <img id="profileIPod" src="attached_assets/iPod black new version.png" alt="My iPod" class="h-12">
             <span>My iPod</span>
           </div>
           
@@ -275,7 +306,7 @@ const demoHTML = `
       </div>
       
       <!-- Cover Flow Modal -->
-      <div id="coverFlowModal" class="hidden fixed inset-0 bg-black/90 flex flex-col items-center justify-center z-50">
+      <div id="coverFlowModal" class="fixed inset-0 bg-black/90 hidden flex flex-col items-center justify-center z-50">
         <div class="p-4 flex justify-between items-center w-full">
           <div class="w-1/3">
             <p class="text-gray-400 text-sm">Track 1 of 4</p>
@@ -319,6 +350,61 @@ const demoHTML = `
     </div>
   </div>
 
+  <!-- Google Login Modal -->
+  <div id="googleLoginModal" class="login-modal">
+    <div class="modal-content">
+      <div class="absolute top-4 right-4">
+        <button id="closeLoginModal" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      
+      <div class="text-center mb-6">
+        <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Continue with Google</h2>
+        <p class="text-gray-600 dark:text-gray-400 mt-2">
+          To save your playlist and create your page
+        </p>
+      </div>
+      
+      <div class="flex justify-center mb-6">
+        <div class="w-16 h-16 relative overflow-hidden">
+          <img id="modalIPod" src="attached_assets/iPod black new version.png" alt="Your iPod" width="64" height="64" class="object-contain">
+        </div>
+      </div>
+      
+      <p class="text-center text-gray-600 dark:text-gray-400 mb-6">
+        Your taste, playlist deserves more audience.
+      </p>
+      
+      <button
+        id="googleLoginButton"
+        class="w-full flex items-center justify-center gap-3 bg-white border border-gray-300 rounded-md py-3 px-4 hover:bg-gray-50 transition-colors"
+      >
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <g clipPath="url(#clip0_1_2)">
+            <path d="M19.999 10.2217C20.0111 9.53428 19.934 8.84788 19.8169 8.17737H10.2041V11.8884H15.8276C15.7211 12.5391 15.4814 13.162 15.1229 13.7195C14.7644 14.2771 14.2946 14.7578 13.7416 15.1328L13.722 15.257L16.7512 17.5567L16.9609 17.5772C18.8883 15.8328 19.9996 13.266 19.9996 10.2217" fill="#4285F4" />
+            <path d="M10.2042 19.9999C12.9593 19.9999 15.2724 19.111 16.9609 17.5772L13.7416 15.1331C12.8808 15.7221 11.7239 16.1333 10.2042 16.1333C8.91385 16.126 7.65863 15.7206 6.61663 14.9747C5.57464 14.2287 4.79879 13.1802 4.39915 11.9778L4.27957 11.9878L1.12973 14.3766L1.08856 14.4888C1.93689 16.1457 3.23879 17.5387 4.84869 18.512C6.45859 19.4852 8.31301 20.001 10.2046 19.9999" fill="#34A853" />
+            <path d="M4.39911 11.9777C4.17592 11.3411 4.06075 10.673 4.05819 9.99996C4.0623 9.32799 4.18026 8.66075 4.40686 8.02225L4.40115 7.8961L1.19269 5.4834L1.0884 5.51303C0.372762 6.90341 0 8.43716 0 9.99987C0 11.5626 0.372762 13.0964 1.0884 14.4868L4.39911 11.9777Z" fill="#FBBC05" />
+            <path d="M10.2042 3.86663C11.6663 3.84438 13.0804 4.37803 14.1498 5.35558L17.0296 2.59996C15.1824 0.901848 12.7344 -0.0298855 10.2042 -3.6784e-05C8.3126 -0.000477834 6.45819 0.514732 4.8483 1.48798C3.2384 2.46124 1.93649 3.85416 1.08813 5.51101L4.3994 8.02225C4.79883 6.82005 5.57467 5.77151 6.61666 5.02552C7.65866 4.27953 8.91387 3.87391 10.2042 3.86663Z" fill="#EB4335" />
+          </g>
+          <defs>
+            <clipPath id="clip0_1_2">
+              <rect width="20" height="20" fill="white" />
+            </clipPath>
+          </defs>
+        </svg>
+        <span class="text-gray-700 font-medium">Continue with Google</span>
+      </button>
+      
+      <p class="text-xs text-center text-gray-500 dark:text-gray-400 mt-4">
+        By continuing, you agree to our Terms of Service and Privacy Policy.
+      </p>
+    </div>
+  </div>
+
   <script>
     // Navigation between steps
     document.getElementById('nextToStep2').addEventListener('click', () => {
@@ -351,11 +437,6 @@ const demoHTML = `
       document.getElementById('step3').classList.add('active');
     });
     
-    document.getElementById('nextToStep5').addEventListener('click', () => {
-      document.getElementById('step4').classList.remove('active');
-      document.getElementById('step5').classList.add('active');
-    });
-    
     // iPod selection
     const ipods = document.querySelectorAll('.ipod');
     let selectedColor = null;
@@ -376,6 +457,9 @@ const demoHTML = `
         
         // Update the iPod image in profile
         document.getElementById('profileIPod').src = ipod.src;
+        
+        // Update the iPod image in modal
+        document.getElementById('modalIPod').src = ipod.src;
         
         // Enable continue button
         document.getElementById('nextToStep3').disabled = false;
@@ -411,108 +495,52 @@ const demoHTML = `
     });
     
     // Google login functionality
-    let googleLoginModal = null;
+    document.getElementById('showLoginModal').addEventListener('click', () => {
+      document.getElementById('googleLoginModal').classList.add('active');
+    });
     
-    function showGoogleLoginModal() {
-      if (googleLoginModal) {
-        googleLoginModal.classList.remove('hidden');
-        return;
-      }
+    document.getElementById('submitPlaylist').addEventListener('click', () => {
+      // First show the CoverFlow view briefly
+      document.getElementById('coverFlowModal').classList.remove('hidden');
       
-      // Create the modal
-      googleLoginModal = document.createElement('div');
-      googleLoginModal.className = 'fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50';
-      googleLoginModal.innerHTML = `
-        <div class="relative bg-white dark:bg-gray-900 rounded-lg shadow-xl max-w-md w-full p-6">
-          <div class="absolute top-4 right-4">
-            <button id="closeLoginModal" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <line x1="18" y1="6" x2="6" y2="18"></line>
-                <line x1="6" y1="6" x2="18" y2="18"></line>
-              </svg>
-            </button>
-          </div>
-          
-          <div class="text-center mb-6">
-            <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Continue with Google</h2>
-            <p class="text-gray-600 dark:text-gray-400 mt-2">
-              To save your playlist and create your page
-            </p>
-          </div>
-          
-          <div class="flex justify-center mb-6">
-            <div class="w-16 h-16 relative overflow-hidden">
-              <img 
-                src="/images/iPod black new version.png" 
-                alt="Your iPod" 
-                width="64" 
-                height="64" 
-                class="object-contain"
-              />
-            </div>
-          </div>
-          
-          <p class="text-center text-gray-600 dark:text-gray-400 mb-6">
-            Your taste, playlist deserves more audience.
-          </p>
-          
-          <button
-            id="googleLoginButton"
-            class="w-full flex items-center justify-center gap-3 bg-white border border-gray-300 rounded-md py-3 px-4 hover:bg-gray-50 transition-colors"
-          >
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <g clipPath="url(#clip0_1_2)">
-                <path d="M19.999 10.2217C20.0111 9.53428 19.934 8.84788 19.8169 8.17737H10.2041V11.8884H15.8276C15.7211 12.5391 15.4814 13.162 15.1229 13.7195C14.7644 14.2771 14.2946 14.7578 13.7416 15.1328L13.722 15.257L16.7512 17.5567L16.9609 17.5772C18.8883 15.8328 19.9996 13.266 19.9996 10.2217" fill="#4285F4" />
-                <path d="M10.2042 19.9999C12.9593 19.9999 15.2724 19.111 16.9609 17.5772L13.7416 15.1331C12.8808 15.7221 11.7239 16.1333 10.2042 16.1333C8.91385 16.126 7.65863 15.7206 6.61663 14.9747C5.57464 14.2287 4.79879 13.1802 4.39915 11.9778L4.27957 11.9878L1.12973 14.3766L1.08856 14.4888C1.93689 16.1457 3.23879 17.5387 4.84869 18.512C6.45859 19.4852 8.31301 20.001 10.2046 19.9999" fill="#34A853" />
-                <path d="M4.39911 11.9777C4.17592 11.3411 4.06075 10.673 4.05819 9.99996C4.0623 9.32799 4.18026 8.66075 4.40686 8.02225L4.40115 7.8961L1.19269 5.4834L1.0884 5.51303C0.372762 6.90341 0 8.43716 0 9.99987C0 11.5626 0.372762 13.0964 1.0884 14.4868L4.39911 11.9777Z" fill="#FBBC05" />
-                <path d="M10.2042 3.86663C11.6663 3.84438 13.0804 4.37803 14.1498 5.35558L17.0296 2.59996C15.1824 0.901848 12.7344 -0.0298855 10.2042 -3.6784e-05C8.3126 -0.000477834 6.45819 0.514732 4.8483 1.48798C3.2384 2.46124 1.93649 3.85416 1.08813 5.51101L4.3994 8.02225C4.79883 6.82005 5.57467 5.77151 6.61666 5.02552C7.65866 4.27953 8.91387 3.87391 10.2042 3.86663Z" fill="#EB4335" />
-              </g>
-              <defs>
-                <clipPath id="clip0_1_2">
-                  <rect width="20" height="20" fill="white" />
-                </clipPath>
-              </defs>
-            </svg>
-            <span class="text-gray-700 font-medium">Continue with Google</span>
-          </button>
-          
-          <p class="text-xs text-center text-gray-500 dark:text-gray-400 mt-4">
-            By continuing, you agree to our Terms of Service and Privacy Policy.
-          </p>
-        </div>
-      `;
+      // After a short delay, show the Google login
+      setTimeout(() => {
+        document.getElementById('coverFlowModal').classList.add('hidden');
+        document.getElementById('googleLoginModal').classList.add('active');
+      }, 2000);
+    });
+    
+    document.getElementById('closeLoginModal').addEventListener('click', () => {
+      document.getElementById('googleLoginModal').classList.remove('active');
+    });
+    
+    document.getElementById('googleLoginButton').addEventListener('click', () => {
+      // Show loading state
+      const button = document.getElementById('googleLoginButton');
+      const originalContent = button.innerHTML;
+      button.innerHTML = '<div class="loading-spinner"></div>';
+      button.disabled = true;
       
-      document.body.appendChild(googleLoginModal);
-      
-      // Add event listeners
-      document.getElementById('closeLoginModal').addEventListener('click', () => {
-        googleLoginModal.classList.add('hidden');
-      });
-      
-      document.getElementById('googleLoginButton').addEventListener('click', () => {
-        // Show loading state
-        const button = document.getElementById('googleLoginButton');
-        const originalContent = button.innerHTML;
-        button.innerHTML = '<div class="h-5 w-5 border-t-2 border-b-2 border-gray-900 rounded-full animate-spin"></div>';
-        button.disabled = true;
+      // Simulate login process
+      setTimeout(() => {
+        // Navigate to profile page
+        document.getElementById('step5').classList.add('active');
+        document.getElementById('step4').classList.remove('active');
+        document.getElementById('googleLoginModal').classList.remove('active');
         
-        // Simulate login process
-        setTimeout(() => {
-          // Navigate to profile page
-          document.getElementById('step5').classList.add('active');
-          document.getElementById('step4').classList.remove('active');
-          googleLoginModal.classList.add('hidden');
-          
-          // Store mock auth in localStorage
-          localStorage.setItem('user', JSON.stringify({
-            id: 'user-123',
-            name: 'John Doe',
-            email: 'johndoe@example.com',
-            isAuthenticated: true
-          }));
-        }, 1500);
-      });
-    }
+        // Store mock auth in localStorage
+        localStorage.setItem('user', JSON.stringify({
+          id: 'user-123',
+          name: 'John Doe',
+          email: 'johndoe@example.com',
+          isAuthenticated: true
+        }));
+        
+        // Reset button
+        button.innerHTML = originalContent;
+        button.disabled = false;
+      }, 1500);
+    });
     
     // CoverFlow modal
     document.getElementById('showCoverFlow').addEventListener('click', () => {
@@ -525,43 +553,3 @@ const demoHTML = `
   </script>
 </body>
 </html>
-`;
-
-// Create a simple HTTP server
-const server = http.createServer((req, res) => {
-  console.log('Request URL:', req.url);
-  
-  // Serve the demo HTML for the root path
-  if (req.url === '/' || req.url === '/index.html') {
-    res.writeHead(200, { 'Content-Type': 'text/html' });
-    res.end(demoHTML);
-    return;
-  }
-  
-  // Handle requests for iPod images
-  if (req.url.startsWith('/images/')) {
-    const imageName = req.url.replace('/images/', '');
-    const imagePath = path.join(__dirname, 'attached_assets', imageName);
-    
-    // Check if the file exists
-    if (fs.existsSync(imagePath)) {
-      const imageContent = fs.readFileSync(imagePath);
-      res.writeHead(200, { 'Content-Type': 'image/png' });
-      res.end(imageContent);
-    } else {
-      res.writeHead(404);
-      res.end('Image not found');
-    }
-    return;
-  }
-  
-  // Default 404 response for any other paths
-  res.writeHead(404);
-  res.end('Not found');
-});
-
-// Start the server
-server.listen(PORT, () => {
-  console.log(`Static demo server running on port ${PORT}`);
-  console.log(`Open http://localhost:${PORT} in your browser`);
-});
