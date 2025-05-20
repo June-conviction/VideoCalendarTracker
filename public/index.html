@@ -4,261 +4,303 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>iPod Experience</title>
-    <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background: linear-gradient(to bottom, #000000, #121212);
-            color: white;
-            margin: 0;
-            padding: 0;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-        .container {
-            width: 100%;
-            max-width: 1200px;
-            padding: 20px;
-            text-align: center;
-        }
-        h1 {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-        }
-        h1 span {
-            display: inline-block;
-            margin: 0 2px;
-        }
-        .ipod-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 2rem;
-            margin-top: 3rem;
-        }
-        .ipod-option {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            cursor: pointer;
-            transition: transform 0.2s ease;
-            padding: 1rem;
-            border-radius: 0.5rem;
-        }
-        .ipod-option:hover {
-            transform: scale(1.05);
-        }
-        .ipod-image {
-            max-width: 100%;
-            height: auto;
-            border-radius: 0.5rem;
-            margin-bottom: 1rem;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-        }
-        .ipod-name {
-            font-weight: 600;
-            font-size: 1.2rem;
-        }
-        .selected {
-            box-shadow: 0 0 0 4px #3b82f6, 0 4px 12px rgba(0, 0, 0, 0.2);
-        }
-        .hello-text {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 2rem;
-        }
-        .color-1 { color: #FF5F5F; }
-        .color-2 { color: #FFB84A; }
-        .color-3 { color: #55D7FF; }
-        .color-4 { color: #91F48F; }
-        .color-5 { color: #B191F1; }
-        .stepper {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 2rem;
-        }
-        .step {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            background-color: #3b82f6;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            margin: 0 0.5rem;
-            position: relative;
-        }
-        .step::after {
-            content: "";
-            position: absolute;
-            width: 100%;
-            height: 2px;
-            background-color: #3b82f6;
-            right: -100%;
-            top: 50%;
-            transform: translateY(-50%);
-        }
-        .step:last-child::after {
-            display: none;
-        }
-        .step.active {
-            background-color: #3b82f6;
-        }
-        .step.inactive {
-            background-color: #374151;
-        }
-        .button {
-            background-color: #3b82f6;
-            border: none;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 0.5rem;
-            font-size: 16px;
-            cursor: pointer;
-            margin-top: 2rem;
-            transition: background-color 0.2s;
-        }
-        .button:hover {
-            background-color: #2563eb;
-        }
-        .hello-section, .ipod-section, .chat-section, .playlist-section {
-            width: 100%;
-            transition: opacity 0.5s;
-        }
-        .hidden {
-            display: none;
-            opacity: 0;
-        }
-    </style>
+    <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-    <!-- Hello Splash -->
-    <div id="hello-section" class="hello-section">
-        <div class="hello-text">
-            <h1>
-                <span class="color-1">H</span>
-                <span class="color-2">e</span>
-                <span class="color-3">l</span>
-                <span class="color-4">l</span>
-                <span class="color-5">o</span>
-            </h1>
-        </div>
-        <p>Welcome to your iPod music experience</p>
-    </div>
+    <!-- Container for all sections -->
+    <div class="container">
+        <!-- Section 1: Hello Splash -->
+        <section id="hello-section">
+            <div class="hello-text">
+                <h1>
+                    <span class="color-1">H</span>
+                    <span class="color-2">e</span>
+                    <span class="color-3">l</span>
+                    <span class="color-4">l</span>
+                    <span class="color-5">o</span>
+                </h1>
+            </div>
+            <p>Welcome to your iPod music experience</p>
+        </section>
 
-    <!-- iPod Selection Screen -->
-    <div id="ipod-section" class="ipod-section hidden">
-        <div class="stepper">
-            <div class="step active">1</div>
-            <div class="step inactive">2</div>
-            <div class="step inactive">3</div>
-        </div>
-        <h2>Choose Your iPod</h2>
-        <p>Select your favorite color for a personalized browsing experience</p>
-        <div class="ipod-grid">
-            <div class="ipod-option" data-color="black" onclick="selectIpod('black')">
-                <img src="/images/ipod-black.png" alt="Black iPod" class="ipod-image">
-                <span class="ipod-name" style="color: #a0aec0;">Black</span>
+        <!-- Section 2: iPod Selection -->
+        <section id="ipod-section" class="hidden">
+            <div class="stepper">
+                <div class="step active">1</div>
+                <div class="step inactive">2</div>
+                <div class="step inactive">3</div>
             </div>
-            <div class="ipod-option" data-color="silver" onclick="selectIpod('silver')">
-                <img src="/images/ipod-silver.png" alt="Silver iPod" class="ipod-image">
-                <span class="ipod-name" style="color: #e2e8f0;">Silver</span>
+            
+            <h2>Choose Your iPod</h2>
+            <p>Select your favorite color for a personalized browsing experience</p>
+            
+            <div class="ipod-grid">
+                <div class="ipod-option" data-color="black" onclick="selectIpod('black')">
+                    <img src="/images/ipod-black.png" alt="Black iPod" class="ipod-image">
+                    <span class="ipod-name" style="color: #a0aec0;">Black</span>
+                </div>
+                <div class="ipod-option" data-color="silver" onclick="selectIpod('silver')">
+                    <img src="/images/ipod-silver.png" alt="Silver iPod" class="ipod-image">
+                    <span class="ipod-name" style="color: #e2e8f0;">Silver</span>
+                </div>
+                <div class="ipod-option" data-color="blue" onclick="selectIpod('blue')">
+                    <img src="/images/ipod-blue.png" alt="Blue iPod" class="ipod-image">
+                    <span class="ipod-name" style="color: #4299e1;">Blue</span>
+                </div>
+                <div class="ipod-option" data-color="red" onclick="selectIpod('red')">
+                    <img src="/images/ipod-red.png" alt="Red iPod" class="ipod-image">
+                    <span class="ipod-name" style="color: #f56565;">Red</span>
+                </div>
+                <div class="ipod-option" data-color="yellow" onclick="selectIpod('yellow')">
+                    <img src="/images/ipod-yellow.png" alt="Yellow iPod" class="ipod-image">
+                    <span class="ipod-name" style="color: #ecc94b;">Yellow</span>
+                </div>
             </div>
-            <div class="ipod-option" data-color="blue" onclick="selectIpod('blue')">
-                <img src="/images/ipod-blue.png" alt="Blue iPod" class="ipod-image">
-                <span class="ipod-name" style="color: #4299e1;">Blue</span>
-            </div>
-            <div class="ipod-option" data-color="red" onclick="selectIpod('red')">
-                <img src="/images/ipod-red.png" alt="Red iPod" class="ipod-image">
-                <span class="ipod-name" style="color: #f56565;">Red</span>
-            </div>
-            <div class="ipod-option" data-color="yellow" onclick="selectIpod('yellow')">
-                <img src="/images/ipod-yellow.png" alt="Yellow iPod" class="ipod-image">
-                <span class="ipod-name" style="color: #ecc94b;">Yellow</span>
-            </div>
-        </div>
-    </div>
+        </section>
 
-    <!-- Chat Section -->
-    <div id="chat-section" class="chat-section hidden">
-        <div class="stepper">
-            <div class="step active">✓</div>
-            <div class="step active">2</div>
-            <div class="step inactive">3</div>
-        </div>
-        <h2>Choose Your Music Service</h2>
-        <p>Select the music streaming service you use</p>
-        <div class="ipod-grid" style="grid-template-columns: repeat(3, 1fr);">
-            <div class="ipod-option" onclick="selectService('spotify')">
-                <div style="width: 80px; height: 80px; background-color: #1DB954; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 1rem;">
-                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM16.5 16.5C16.27 16.73 15.9 16.75 15.65 16.55C14.22 15.6 12.44 15.1 10.5 15.1C9.23 15.1 8.01 15.29 6.9 15.65C6.6 15.75 6.33 15.58 6.23 15.28C6.14 14.98 6.3 14.7 6.6 14.6C7.85 14.22 9.18 14 10.5 14C12.66 14 14.67 14.58 16.25 15.63C16.51 15.83 16.53 16.2 16.25 16.48H16.5V16.5ZM17.5 13.5C17.22 13.78 16.77 13.8 16.47 13.55C14.76 12.35 12.48 11.7 10 11.7C8.47 11.7 7.02 11.96 5.7 12.47C5.35 12.61 5.01 12.4 4.87 12.05C4.74 11.7 4.95 11.36 5.3 11.22C6.77 10.67 8.38 10.38 10.03 10.38C12.77 10.38 15.34 11.09 17.28 12.47C17.55 12.67 17.6 13.07 17.35 13.37L17.5 13.5ZM18.7 10.23C18.37 10.57 17.82 10.6 17.47 10.28C15.4 8.91 12.47 8.1 9.47 8.1C7.63 8.1 5.87 8.4 4.27 9C3.87 9.13 3.47 8.9 3.33 8.5C3.2 8.1 3.43 7.69 3.83 7.56C5.6 6.92 7.53 6.58 9.5 6.58C12.8 6.58 16.07 7.47 18.43 9.06C18.8 9.3 18.83 9.83 18.53 10.2L18.7 10.23Z" fill="white"/>
-                    </svg>
-                </div>
-                <span class="ipod-name">Spotify</span>
+        <!-- Section 3: Selected iPod Confirmation -->
+        <section id="selected-section" class="hidden">
+            <div class="stepper">
+                <div class="step active">✓</div>
+                <div class="step inactive">2</div>
+                <div class="step inactive">3</div>
             </div>
-            <div class="ipod-option" onclick="selectService('apple')">
-                <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #FF4E8B, #A740E3); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 1rem;">
-                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M17.05 11.95C17.05 9.15 19.15 7.75 19.25 7.7C17.9 5.7 15.8 5.4 15.05 5.35C13.2 5.15 11.4 6.45 10.5 6.45C9.55 6.45 8.05 5.35 6.55 5.4C4.65 5.45 2.9 6.5 1.95 8.2C0 11.7 1.45 17 3.35 19.8C4.3 21.15 5.45 22.7 6.95 22.65C8.45 22.6 9 21.7 10.8 21.7C12.55 21.7 13.1 22.65 14.65 22.6C16.25 22.55 17.25 21.2 18.15 19.85C19.25 18.25 19.7 16.7 19.75 16.55C19.7 16.5 17.1 15.6 17.05 12V11.95ZM14.2 3.7C14.95 2.75 15.45 1.45 15.3 0.15C14.2 0.2 12.85 0.9 12.05 1.8C11.35 2.6 10.75 3.95 10.95 5.2C12.15 5.3 13.4 4.65 14.2 3.7Z" fill="white"/>
-                    </svg>
+            
+            <div class="selected-ipod-container">
+                <div id="selected-ipod-wrapper" class="ipod-option" style="transform: scale(1.2);">
+                    <!-- Image filled by JS -->
                 </div>
-                <span class="ipod-name">Apple Music</span>
+                <h2 id="selected-ipod-text"></h2>
             </div>
-            <div class="ipod-option" onclick="selectService('other')">
-                <div style="width: 80px; height: 80px; background-color: #6B7280; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 1rem;">
-                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M12 3V13.55C11.41 13.21 10.73 13 10 13C7.79 13 6 14.79 6 17C6 19.21 7.79 21 10 21C12.21 21 14 19.21 14 17V7H18V3H12ZM10 19C8.9 19 8 18.1 8 17C8 15.9 8.9 15 10 15C11.1 15 12 15.9 12 17C12 18.1 11.1 19 10 19Z" fill="white"/>
-                    </svg>
+        </section>
+
+        <!-- Section 4: Chat / Service Selection -->
+        <section id="service-section" class="hidden">
+            <div class="stepper">
+                <div class="step active">✓</div>
+                <div class="step active">2</div>
+                <div class="step inactive">3</div>
+            </div>
+            
+            <h2>Choose Your Music Service</h2>
+            <p>Select the music streaming service you use</p>
+            
+            <div class="ipod-grid" style="grid-template-columns: repeat(3, 1fr);">
+                <div class="ipod-option" onclick="selectService('spotify')">
+                    <div style="width: 80px; height: 80px; background-color: #1DB954; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 1rem;">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM16.5 16.5C16.27 16.73 15.9 16.75 15.65 16.55C14.22 15.6 12.44 15.1 10.5 15.1C9.23 15.1 8.01 15.29 6.9 15.65C6.6 15.75 6.33 15.58 6.23 15.28C6.14 14.98 6.3 14.7 6.6 14.6C7.85 14.22 9.18 14 10.5 14C12.66 14 14.67 14.58 16.25 15.63C16.51 15.83 16.53 16.2 16.25 16.48H16.5V16.5ZM17.5 13.5C17.22 13.78 16.77 13.8 16.47 13.55C14.76 12.35 12.48 11.7 10 11.7C8.47 11.7 7.02 11.96 5.7 12.47C5.35 12.61 5.01 12.4 4.87 12.05C4.74 11.7 4.95 11.36 5.3 11.22C6.77 10.67 8.38 10.38 10.03 10.38C12.77 10.38 15.34 11.09 17.28 12.47C17.55 12.67 17.6 13.07 17.35 13.37L17.5 13.5ZM18.7 10.23C18.37 10.57 17.82 10.6 17.47 10.28C15.4 8.91 12.47 8.1 9.47 8.1C7.63 8.1 5.87 8.4 4.27 9C3.87 9.13 3.47 8.9 3.33 8.5C3.2 8.1 3.43 7.69 3.83 7.56C5.6 6.92 7.53 6.58 9.5 6.58C12.8 6.58 16.07 7.47 18.43 9.06C18.8 9.3 18.83 9.83 18.53 10.2L18.7 10.23Z" fill="white"/>
+                        </svg>
+                    </div>
+                    <span class="ipod-name">Spotify</span>
                 </div>
-                <span class="ipod-name">Other</span>
+                
+                <div class="ipod-option" onclick="selectService('apple')">
+                    <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #FF4E8B, #A740E3); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 1rem;">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M17.05 11.95C17.05 9.15 19.15 7.75 19.25 7.7C17.9 5.7 15.8 5.4 15.05 5.35C13.2 5.15 11.4 6.45 10.5 6.45C9.55 6.45 8.05 5.35 6.55 5.4C4.65 5.45 2.9 6.5 1.95 8.2C0 11.7 1.45 17 3.35 19.8C4.3 21.15 5.45 22.7 6.95 22.65C8.45 22.6 9 21.7 10.8 21.7C12.55 21.7 13.1 22.65 14.65 22.6C16.25 22.55 17.25 21.2 18.15 19.85C19.25 18.25 19.7 16.7 19.75 16.55C19.7 16.5 17.1 15.6 17.05 12V11.95ZM14.2 3.7C14.95 2.75 15.45 1.45 15.3 0.15C14.2 0.2 12.85 0.9 12.05 1.8C11.35 2.6 10.75 3.95 10.95 5.2C12.15 5.3 13.4 4.65 14.2 3.7Z" fill="white"/>
+                        </svg>
+                    </div>
+                    <span class="ipod-name">Apple Music</span>
+                </div>
+                
+                <div class="ipod-option" onclick="selectService('other')">
+                    <div style="width: 80px; height: 80px; background-color: #6B7280; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 1rem;">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 3V13.55C11.41 13.21 10.73 13 10 13C7.79 13 6 14.79 6 17C6 19.21 7.79 21 10 21C12.21 21 14 19.21 14 17V7H18V3H12ZM10 19C8.9 19 8 18.1 8 17C8 15.9 8.9 15 10 15C11.1 15 12 15.9 12 17C12 18.1 11.1 19 10 19Z" fill="white"/>
+                        </svg>
+                    </div>
+                    <span class="ipod-name">Other</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 5: Playlist URL Input -->
+        <section id="playlist-section" class="hidden">
+            <div class="stepper">
+                <div class="step active">✓</div>
+                <div class="step active">✓</div>
+                <div class="step active">3</div>
+            </div>
+            
+            <h2>Add Your Playlist</h2>
+            <p>Enter your playlist URL to create your iPod experience</p>
+            
+            <div class="playlist-form">
+                <div class="input-group">
+                    <label for="playlist-url" class="input-label">Playlist URL</label>
+                    <input type="text" id="playlist-url" class="input-field" placeholder="https://open.spotify.com/playlist/..." required>
+                </div>
+                
+                <div class="input-group">
+                    <label for="playlist-name" class="input-label">Playlist Name (optional)</label>
+                    <input type="text" id="playlist-name" class="input-field" placeholder="My Awesome Playlist">
+                </div>
+                
+                <button onclick="submitPlaylist()" class="submit-button">Create iPod Experience</button>
+            </div>
+        </section>
+
+        <!-- CoverFlow View (Hidden initially) -->
+        <div id="coverflow-view" class="coverflow-container hidden">
+            <button class="close-button" onclick="closeCoverFlow()">×</button>
+            
+            <div class="coverflow">
+                <div class="coverflow-item coverflow-left" data-index="0"></div>
+                <div class="coverflow-item coverflow-active" data-index="1"></div>
+                <div class="coverflow-item coverflow-right" data-index="2"></div>
+            </div>
+            
+            <div class="track-info">
+                <h3 class="track-title" id="track-title">Track Title</h3>
+                <p class="track-artist" id="track-artist">Artist Name</p>
+            </div>
+            
+            <div class="coverflow-controls">
+                <button class="coverflow-button" onclick="prevTrack()">◀</button>
+                <button class="coverflow-button" style="width: 60px; height: 60px;">▶</button>
+                <button class="coverflow-button" onclick="nextTrack()">▶</button>
             </div>
         </div>
     </div>
 
     <script>
-        // Variables to track state
+        // Demo tracks for CoverFlow
+        const tracks = [
+            {
+                title: "Blinding Lights",
+                artist: "The Weeknd",
+                image: "https://images.unsplash.com/photo-1619983081563-430f63602796?w=300&h=300"
+            },
+            {
+                title: "Good Days",
+                artist: "SZA",
+                image: "https://images.unsplash.com/photo-1558591710-4b4a1ae0f04d?w=300&h=300"
+            },
+            {
+                title: "Save Your Tears",
+                artist: "The Weeknd & Ariana Grande",
+                image: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=300&h=300"
+            },
+            {
+                title: "Levitating",
+                artist: "Dua Lipa",
+                image: "https://images.unsplash.com/photo-1598387993281-cecf8b71a8f8?w=300&h=300"
+            }
+        ];
+        
+        // Keep track of application state
+        let currentSection = "hello";
         let selectedColor = null;
         let selectedService = null;
+        let currentTrackIndex = 1; // Default active track in CoverFlow
         
-        // DOM elements
-        const helloSection = document.getElementById('hello-section');
-        const ipodSection = document.getElementById('ipod-section');
-        const chatSection = document.getElementById('chat-section');
+        // Get all section elements
+        const sections = {
+            hello: document.getElementById("hello-section"),
+            ipod: document.getElementById("ipod-section"),
+            selected: document.getElementById("selected-section"),
+            service: document.getElementById("service-section"),
+            playlist: document.getElementById("playlist-section"),
+            coverflow: document.getElementById("coverflow-view")
+        };
         
-        // Show iPod selection after a delay
-        setTimeout(() => {
-            helloSection.classList.add('hidden');
-            ipodSection.classList.remove('hidden');
-        }, 1500);
+        // Initialize - show Hello section and hide others
+        window.onload = function() {
+            showSection("hello");
+            
+            // Auto-transition to iPod selection after 1.5 seconds
+            setTimeout(() => {
+                showSection("ipod");
+            }, 1500);
+            
+            // Set up CoverFlow with initial tracks
+            updateCoverFlow();
+        };
         
-        // Select iPod function
+        // Helper to show a section and hide others
+        function showSection(sectionName) {
+            currentSection = sectionName;
+            
+            // Hide all sections
+            Object.values(sections).forEach(section => {
+                section.classList.add("hidden");
+            });
+            
+            // Show the requested section
+            sections[sectionName].classList.remove("hidden");
+        }
+        
+        // Handle iPod color selection
         function selectIpod(color) {
             selectedColor = color;
             
-            // Reset all selections
-            document.querySelectorAll('.ipod-option').forEach(option => {
-                option.classList.remove('selected');
-            });
+            // Update the selected iPod section
+            const selectedWrapper = document.getElementById("selected-ipod-wrapper");
+            selectedWrapper.innerHTML = `<img src="/images/ipod-${color}.png" alt="${color} iPod" class="ipod-image">`;
             
-            // Add selected class
-            document.querySelector(`.ipod-option[data-color="${color}"]`).classList.add('selected');
+            document.getElementById("selected-ipod-text").textContent = `${color.charAt(0).toUpperCase() + color.slice(1)} iPod Selected`;
             
-            // Show confirmation and proceed
+            // Show the selected confirmation
+            showSection("selected");
+            
+            // Auto-transition to service selection after a short delay
             setTimeout(() => {
-                ipodSection.classList.add('hidden');
-                chatSection.classList.remove('hidden');
-            }, 800);
+                showSection("service");
+            }, 1200);
         }
         
-        // Select music service
+        // Handle service selection
         function selectService(service) {
             selectedService = service;
             
-            // Show confirmation message
-            alert(`You selected the ${selectedColor} iPod with ${service} music service!`);
+            // Show the playlist input section
+            showSection("playlist");
+        }
+        
+        // Handle playlist submission
+        function submitPlaylist() {
+            const playlistUrl = document.getElementById("playlist-url").value;
+            const playlistName = document.getElementById("playlist-name").value;
+            
+            if (!playlistUrl) {
+                alert("Please enter a playlist URL");
+                return;
+            }
+            
+            // In a real app, we would process the playlist URL here
+            // For demo purposes, we'll just show the CoverFlow view
+            showSection("coverflow");
+        }
+        
+        // CoverFlow control functions
+        function updateCoverFlow() {
+            const coverflowItems = document.querySelectorAll(".coverflow-item");
+            
+            // Set background images for the three visible items
+            coverflowItems.forEach((item, index) => {
+                const trackIndex = (currentTrackIndex - 1 + index) % tracks.length;
+                item.style.backgroundImage = `url(${tracks[trackIndex].image})`;
+                item.setAttribute("data-index", trackIndex);
+            });
+            
+            // Update the track info
+            document.getElementById("track-title").textContent = tracks[currentTrackIndex].title;
+            document.getElementById("track-artist").textContent = tracks[currentTrackIndex].artist;
+        }
+        
+        function nextTrack() {
+            currentTrackIndex = (currentTrackIndex + 1) % tracks.length;
+            updateCoverFlow();
+        }
+        
+        function prevTrack() {
+            currentTrackIndex = (currentTrackIndex - 1 + tracks.length) % tracks.length;
+            updateCoverFlow();
+        }
+        
+        function closeCoverFlow() {
+            showSection("playlist");
         }
     </script>
 </body>

@@ -1,0 +1,342 @@
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: linear-gradient(to bottom, #000000, #121212);
+    color: white;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.container {
+    width: 100%;
+    max-width: 1200px;
+    padding: 20px;
+    text-align: center;
+}
+
+h1 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+h1 span {
+    display: inline-block;
+    margin: 0 2px;
+}
+
+.color-1 { color: #FF5F5F; }
+.color-2 { color: #FFB84A; }
+.color-3 { color: #55D7FF; }
+.color-4 { color: #91F48F; }
+.color-5 { color: #B191F1; }
+
+.hello-text {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 2rem;
+}
+
+.ipod-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2rem;
+    margin-top: 3rem;
+}
+
+.ipod-option {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    padding: 1rem;
+    border-radius: 0.5rem;
+}
+
+.ipod-option:hover {
+    transform: scale(1.05);
+}
+
+.ipod-image {
+    max-width: 100%;
+    height: auto;
+    border-radius: 0.5rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.ipod-name {
+    font-weight: 600;
+    font-size: 1.2rem;
+}
+
+.selected {
+    box-shadow: 0 0 0 4px #3b82f6, 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.stepper {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 2rem;
+}
+
+.step {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    margin: 0 0.5rem;
+    position: relative;
+}
+
+.step::after {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    right: -100%;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.step:last-child::after {
+    display: none;
+}
+
+.step.active {
+    background-color: #3b82f6;
+}
+
+.step.active::after {
+    background-color: #3b82f6;
+}
+
+.step.inactive {
+    background-color: #374151;
+}
+
+.step.inactive::after {
+    background-color: #374151;
+}
+
+.button {
+    background-color: #3b82f6;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 0.5rem;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 2rem;
+    transition: background-color 0.2s;
+}
+
+.button:hover {
+    background-color: #2563eb;
+}
+
+section {
+    width: 100%;
+    max-width: 1200px;
+    padding: 20px;
+    opacity: 1;
+    transition: opacity 0.5s ease;
+}
+
+section.hidden {
+    display: none;
+    opacity: 0;
+}
+
+.service-option {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #1e293b;
+    padding: 1.5rem;
+    border-radius: 1rem;
+    transition: transform 0.2s ease;
+}
+
+.service-option:hover {
+    transform: scale(1.05);
+}
+
+.service-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+}
+
+.service-name {
+    font-weight: 600;
+    font-size: 1.2rem;
+}
+
+.coverflow-container {
+    width: 100%;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.95);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.coverflow {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    width: 100%;
+    height: 400px;
+    margin-bottom: 2rem;
+}
+
+.coverflow-item {
+    position: absolute;
+    width: 220px;
+    height: 220px;
+    border-radius: 8px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    transition: all 0.5s ease;
+    background-size: cover;
+    background-position: center;
+}
+
+.coverflow-active {
+    z-index: 10;
+    transform: scale(1);
+}
+
+.coverflow-left, .coverflow-right {
+    transform: scale(0.8);
+    filter: brightness(0.7);
+}
+
+.coverflow-left {
+    transform: translateX(-180px) rotateY(30deg) scale(0.8);
+}
+
+.coverflow-right {
+    transform: translateX(180px) rotateY(-30deg) scale(0.8);
+}
+
+.coverflow-controls {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.coverflow-button {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: #ffffff;
+    color: #000000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s ease;
+}
+
+.coverflow-button:hover {
+    background-color: #eeeeee;
+    transform: scale(1.1);
+}
+
+.track-info {
+    text-align: center;
+    margin-top: 2rem;
+}
+
+.track-title {
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.track-artist {
+    font-size: 1.2rem;
+    color: #a0aec0;
+}
+
+.close-button {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 2rem;
+    cursor: pointer;
+}
+
+.playlist-form {
+    background-color: #1e293b;
+    padding: 2rem;
+    border-radius: 1rem;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.input-group {
+    margin-bottom: 1.5rem;
+}
+
+.input-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.input-field {
+    width: 100%;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    border: 2px solid #2d3748;
+    background-color: #0f172a;
+    color: white;
+    font-size: 1rem;
+}
+
+.input-field:focus {
+    outline: none;
+    border-color: #3b82f6;
+}
+
+.submit-button {
+    width: 100%;
+    padding: 0.75rem;
+    background-color: #3b82f6;
+    color: white;
+    border: none;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.submit-button:hover {
+    background-color: #2563eb;
+}
