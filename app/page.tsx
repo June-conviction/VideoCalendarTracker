@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { AnimatePresence, motion } from "framer-motion"
 import Image from "next/image"
+import { GoogleLoginModal } from "@/components/GoogleLoginModal"
 
 // All colors available for the iPod selection
 const ipodColors = [
@@ -75,23 +76,31 @@ export default function Home() {
     setStep("playlist")
   }
   
+  // State for Google login modal
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false)
+  
   // Handle playlist submission
   const handleSubmitPlaylist = (e: React.FormEvent) => {
     e.preventDefault()
     
     // In a real app, this would submit the playlist data to the backend
-    // and then redirect to the profile page after login
+    // and then show the login modal
     
-    // For demo purposes, we'll just show the CoverFlow view first
+    // For demo purposes, we'll first show the CoverFlow view
     setStep("coverflow")
     
-    // After a short delay, we'd normally redirect to login/profile
-    // In a real app, this would be handled with proper authentication
+    // After a short delay, show the Google login modal
     setTimeout(() => {
-      // Using window.location for client-side navigation
-      // In a production app, we'd use Next.js router
-      // window.location.href = "/profile"
-    }, 3000)
+      setIsLoginModalOpen(true)
+    }, 2000)
+  }
+  
+  // Handle successful Google login
+  const handleLoginSuccess = () => {
+    setIsLoginModalOpen(false)
+    
+    // Navigate to profile page
+    window.location.href = "/profile"
   }
   
   // Handle track navigation
@@ -319,12 +328,12 @@ export default function Home() {
               
               <div className="flex items-center justify-center gap-2 mt-2">
                 <span className="text-gray-400">Your taste deserves more audience.</span>
-                <a 
-                  href="/profile" 
+                <button 
+                  onClick={() => setIsLoginModalOpen(true)}
                   className="text-blue-400 hover:text-blue-300 underline"
                 >
                   Continue with Google
-                </a>
+                </button>
               </div>
             </form>
           </motion.div>
