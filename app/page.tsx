@@ -86,13 +86,8 @@ export default function Home() {
     // In a real app, this would submit the playlist data to the backend
     // and then show the login modal
     
-    // For demo purposes, we'll first show the CoverFlow view
-    setStep("coverflow")
-    
-    // After a short delay, show the Google login modal
-    setTimeout(() => {
-      setIsLoginModalOpen(true)
-    }, 2000)
+    // Show the Google login modal immediately
+    setIsLoginModalOpen(true)
   }
   
   // Handle successful Google login
