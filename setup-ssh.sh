@@ -1,30 +1,18 @@
-#!/bin/bash
-
-# Create SSH directory with proper permissions
+#!/usr/bin/env bash
+# 1) Make sure ~/.ssh exists
 mkdir -p ~/.ssh
 chmod 700 ~/.ssh
 
-# Setup SSH config
-cat > ~/.ssh/config << EOF
-Host github.com
-  IdentityFile ~/.ssh/id_ed25519
-  User git
-EOF
-chmod 600 ~/.ssh/config
+# 2) Write the private key exactly as in the SSH_PRIVATE_KEY env var
+printf '%s\n' "$SSH_PRIVATE_KEY" > ~/.ssh/id_ed25519
+chmod 600 ~/.ssh/id_ed25519
 
-# Check if SSH key exists, if not, create it
-if [ ! -f ~/.ssh/id_ed25519 ]; then
-  echo "Creating new SSH key pair..."
-  ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519 -N "" -C "github-key-for-replit"
-  echo "New SSH key created. Add this public key to your GitHub account:"
-  cat ~/.ssh/id_ed25519.pub
-else
-  echo "SSH key already exists."
-fi
+# 3) Add GitHub to known_hosts so we never get the authenticity prompt again
+ssh-keyscan github.com >> ~/.ssh/known_hosts
 
-# Display instructions
-echo ""
-echo "Instructions to use this SSH key:"
-echo "1. Copy the public key above and add it to GitHub"
-echo "2. Run 'bash setup-ssh.sh' whenever you restart Replit"
-echo "3. You can now use 'git push' commands"
+# 4) Start the agent and add the key
+eval "$(ssh-agent -s)"
+ssh-add ~/.ssh/id_ed25519
+
+# 5) Finally run whatever command was passed in (your dev server)
+exec "$@"
