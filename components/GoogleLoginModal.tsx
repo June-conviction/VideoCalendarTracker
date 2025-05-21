@@ -74,7 +74,7 @@ export function GoogleLoginModal({ isOpen, onClose, onSuccess }: GoogleLoginModa
             <div className="flex justify-center mb-6">
               <div className="w-16 h-16 relative overflow-hidden">
                 <Image 
-                  src={`/attached_assets/iPod ${ipodColor}.png`}
+                  src={`/images/iPod ${ipodColor}.png`}
                   alt="Your iPod" 
                   width={64} 
                   height={64} 
