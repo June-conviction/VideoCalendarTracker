@@ -59,7 +59,9 @@ export default function SelectIpodPage() {
                   alt={`${ipod.name} iPod`}
                   width={120}
                   height={240}
-                  className="h-auto object-contain"
+                  className="object-contain"
+                  style={{ width: "auto", height: "auto", maxHeight: "240px" }}
+                  priority={ipod.id === "black"}
                 />
                 <p className="mt-2 text-center text-sm">{ipod.name}</p>
               </div>

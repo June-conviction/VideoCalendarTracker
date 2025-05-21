@@ -14,7 +14,6 @@ interface GoogleLoginModalProps {
 
 export function GoogleLoginModal({ isOpen, onClose, onSuccess }: GoogleLoginModalProps) {
   const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
   
   // Get selected iPod color from localStorage
   const ipodColor = typeof window !== 'undefined' 
@@ -27,6 +26,8 @@ export function GoogleLoginModal({ isOpen, onClose, onSuccess }: GoogleLoginModa
       
       // Get the current URL for redirecting back after Google auth
       const redirectTo = window.location.origin + '/loading'
+      
+      console.log("Starting Google login with redirect URL:", redirectTo);
       
       // Start the Google OAuth flow using our custom Supabase implementation
       const { data, error } = await supabase.auth.signInWithOAuth({
