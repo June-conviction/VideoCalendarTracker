@@ -1,5 +1,3 @@
 {
-  "/page": "app/page.js",
-  "/hello/page": "app/hello/page.js",
   "/select-ipod/page": "app/select-ipod/page.js"
 }
