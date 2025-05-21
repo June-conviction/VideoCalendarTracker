@@ -1,0 +1,115 @@
+import { serve } from "https://deno.land/std@0.177.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js";
+
+// ✅ Supabase 설정 (최신)
+const SUPABASE_URL = "https://spifocdejillzfsksudg.supabase.co";
+const SUPABASE_ANON_KEY =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNwaWZvY2RlamlsbHpmc2tzdWRnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc2Mjk2NTUsImV4cCI6MjA2MzIwNTY1NX0.F3e1E_7b4MJNoC9aOxn3GTZMpvYb24OSb-911udhFps";
+
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// ✅ Spotify 인증 정보 (변경 없음)
+const CLIENT_ID = "14b6440f884549ff959bf023f24bf17f";
+const CLIENT_SECRET = "876e09854b5b4fc78db21f688c733b70";
+const REFRESH_TOKEN =
+  "AQA5y6dMI7AU1iZrP2PPn5ph8QW82XMR2kOjBAuseZcP2Fv2Zo9GN-dbZfk3ESLU3yD1GaOyk9aLhfGU4B8ZFNPpVtyW8gEjGqwcl3skOVhX53pHcdefBbDVNPnPiIyphGk";
+
+async function getAccessTokenFromRefresh() {
+  const response = await fetch("https://accounts.spotify.com/api/token", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    body: new URLSearchParams({
+      grant_type: "refresh_token",
+      refresh_token: REFRESH_TOKEN,
+      client_id: CLIENT_ID,
+      client_secret: CLIENT_SECRET,
+    }),
+  });
+  if (!response.ok) {
+    const error = await response.text();
+    throw new Error(`Failed to refresh access token: ${error}`);
+  }
+  const data = await response.json();
+  return data.access_token;
+}
+
+serve(async (req) => {
+  if (req.method !== "POST") {
+    return new Response("Only POST requests allowed", { status: 405 });
+  }
+
+  const { playlist_url, id } = await req.json();
+
+  if (!playlist_url || !id) {
+    return new Response("playlist_url and id are required", { status: 400 });
+  }
+
+  const playlistId = playlist_url.split("/")[4]?.split("?")[0];
+  if (!playlistId) {
+    return new Response("Invalid playlist URL", { status: 400 });
+  }
+
+  let accessToken = "";
+  try {
+    accessToken = await getAccessTokenFromRefresh();
+  } catch {
+    return new Response("Error refreshing token", { status: 500 });
+  }
+
+  const spotifyResponse = await fetch(
+    `https://api.spotify.com/v1/playlists/${playlistId}`,
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    }
+  );
+
+  if (!spotifyResponse.ok) {
+    const errorText = await spotifyResponse.text();
+    return new Response(`Spotify API error: ${errorText}`, {
+      status: spotifyResponse.status,
+    });
+  }
+
+  const playlistData = await spotifyResponse.json();
+  const playlistTitle = playlistData.name;
+  const playlistImage = playlistData.images?.[0]?.url || "";
+  const playlistDescription = playlistData.description || "";
+  const creatorName = playlistData.owner?.display_name || "";
+
+  const { error } = await supabase.from("playlist-retrieve").insert([
+    {
+      user_id: id,
+      playlist_url: playlist_url,
+      platform: "spotify",
+      playlist_title: playlistTitle,
+      playlist_description: playlistDescription,
+      playlist_image: playlistImage,
+      creator: creatorName,
+    },
+  ]);
+
+  if (error) {
+    return new Response(`Supabase Insert Error: ${error.message}`, {
+      status: 500,
+    });
+  }
+
+  return new Response(
+    JSON.stringify({
+      message: "Playlist info saved successfully!",
+      playlist_title: playlistTitle,
+      playlist_image: playlistImage,
+      playlist_description: playlistDescription,
+      creator: creatorName,
+    }),
+    {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
+});

@@ -4,6 +4,7 @@ import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { X } from "lucide-react"
 import Image from "next/image"
+import { supabase } from "@/lib/supabase"
 
 interface GoogleLoginModalProps {
   isOpen: boolean
@@ -13,29 +14,54 @@ interface GoogleLoginModalProps {
 
 export function GoogleLoginModal({ isOpen, onClose, onSuccess }: GoogleLoginModalProps) {
   const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
   
   // Get selected iPod color from localStorage
   const ipodColor = typeof window !== 'undefined' 
     ? localStorage.getItem('selectedIpodColor') || "black" 
     : "black"
   
-  const handleGoogleLogin = () => {
-    setIsLoading(true)
-    
-    // Simulate authentication process
-    setTimeout(() => {
-      // Store mock auth data in localStorage
-      localStorage.setItem('user', JSON.stringify({
-        id: 'user-123',
-        name: 'John Doe',
-        email: 'johndoe@example.com',
-        avatarUrl: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=80&h=80',
-        isAuthenticated: true
-      }))
+  const handleGoogleLogin = async () => {
+    try {
+      setIsLoading(true)
       
-      setIsLoading(false)
-      onSuccess()
-    }, 1500)
+      // Get the current URL for redirecting back after Google auth
+      const redirectTo = window.location.origin + '/loading'
+      
+      // Start the Google OAuth flow using our custom Supabase implementation
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: redirectTo,
+          scopes: 'email profile',
+        }
+      })
+      
+      if (error) {
+        console.error('Login error:', error)
+        return
+      }
+      
+      // For our implementation, we're storing user data directly in localStorage
+      // In a real implementation, we would redirect to Google's login page
+      
+      // After successful login simulation, navigate to the user profile page
+      setTimeout(() => {
+        // Check if the user data was stored successfully
+        const userData = localStorage.getItem('user')
+        if (userData) {
+          console.log("User logged in successfully")
+          onSuccess()
+        }
+      }, 1500)
+    } catch (err) {
+      console.error('Login error:', err)
+    } finally {
+      // Keep the loading state for our simulated delay
+      setTimeout(() => {
+        setIsLoading(false)
+      }, 1500)
+    }
   }
   
   return (

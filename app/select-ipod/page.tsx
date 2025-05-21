@@ -20,14 +20,14 @@ export default function SelectIpodPage() {
   
   const handleSelectIpod = (colorId: string) => {
     setSelectedColor(colorId)
-  }
-  
-  const handleContinue = () => {
-    if (selectedColor) {
-      // Store selection in localStorage for use in later steps
-      localStorage.setItem('selectedIpodColor', selectedColor)
+    
+    // Store selection in localStorage for use in later steps
+    localStorage.setItem('selectedIpodColor', colorId)
+    
+    // Short delay before navigation for visual feedback
+    setTimeout(() => {
       router.push("/select-service")
-    }
+    }, 500)
   }
   
   const handleBack = () => {
@@ -67,24 +67,12 @@ export default function SelectIpodPage() {
           ))}
         </div>
         
-        <div className="flex justify-center space-x-4">
+        <div className="flex justify-center">
           <button
             onClick={handleBack}
             className="px-4 py-2 bg-gray-700 rounded-lg hover:bg-gray-600 transition-colors"
           >
             Back
-          </button>
-          
-          <button
-            onClick={handleContinue}
-            disabled={!selectedColor}
-            className={`px-6 py-3 rounded-lg transition-colors ${
-              selectedColor 
-                ? "bg-blue-600 hover:bg-blue-700 text-white" 
-                : "bg-gray-600 text-gray-300 cursor-not-allowed"
-            }`}
-          >
-            Continue
           </button>
         </div>
       </motion.div>
