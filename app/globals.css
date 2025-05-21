@@ -18,6 +18,13 @@ body {
     rgb(var(--background-start-rgb));
 }
 
+/* Animation for the beam background */
+@keyframes pulse {
+  0% { opacity: 0.05; }
+  50% { opacity: 0.15; }
+  100% { opacity: 0.05; }
+}
+
 /* Custom styles for iPod selection */
 .perspective-1000 {
   perspective: 1000px;
@@ -31,7 +38,7 @@ body {
   transform: rotateY(-45deg);
 }
 
-/* Custom scrollbar for a modern look */
+/* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
 }

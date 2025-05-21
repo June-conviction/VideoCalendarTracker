@@ -1,4 +1,20 @@
 module.exports = {
+  // Set port to 5000 for compatibility with Replit
+  serverRuntimeConfig: {
+    port: 5000,
+  },
+  
+  // Add image configuration
+  images: {
+    domains: ['localhost'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '**',
+      },
+    ],
+  },
+  
   async rewrites() {
     return [
       {

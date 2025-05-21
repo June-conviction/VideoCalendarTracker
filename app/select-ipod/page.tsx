@@ -7,11 +7,11 @@ import { motion } from "framer-motion"
 
 // iPod color options
 const ipodColors = [
-  { id: "black", name: "Black", path: "/images/iPod black new version.png" },
-  { id: "silver", name: "Silver", path: "/images/iPod silver.png" },
-  { id: "blue", name: "Blue", path: "/images/iPod blue.png" },
-  { id: "red", name: "Red", path: "/images/iPod red.png" },
-  { id: "yellow", name: "Yellow", path: "/images/iPod yellow.png" }
+  { id: "black", name: "Black", path: "/images/ipod-black.png" },
+  { id: "silver", name: "Silver", path: "/images/ipod-silver.png" },
+  { id: "blue", name: "Blue", path: "/images/ipod-blue.png" },
+  { id: "red", name: "Red", path: "/images/ipod-red.png" },
+  { id: "yellow", name: "Yellow", path: "/images/ipod-yellow.png" }
 ]
 
 export default function SelectIpodPage() {
