@@ -3,7 +3,7 @@
 import React, { useEffect, useRef, useCallback } from "react"
 import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { Stepper } from "./Stepper"
+import { Stepper } from "./stepper"
 import { Button } from "@/components/ui/button"
 import { ChevronLeft, Send } from "lucide-react"
 import { ChatBubble, ChatBubbleMessage } from "@/components/chat-bubble"
