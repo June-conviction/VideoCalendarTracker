@@ -260,7 +260,7 @@ export default function UserProfilePage() {
               className="w-32 h-60 relative rounded-xl bg-transparent flex items-center justify-center cursor-pointer hover:scale-105 transition-transform"
             >
               <Image 
-                src={`/images/iPod ${ipodColor}.png`}
+                src={`/images/ipod-${ipodColor}.png`}
                 alt="My iPod"
                 width={150}
                 height={300}
