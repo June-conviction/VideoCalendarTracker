@@ -237,7 +237,13 @@ export default function UserProfilePage() {
               onClick={changeBackground}
               className="w-20 h-20 rounded-xl bg-white/20 backdrop-blur-xl shadow-xl flex flex-col items-center justify-center cursor-pointer hover:bg-white/30 transition-colors"
             >
-              <ImageIcon size={32} className="text-white drop-shadow-md" />
+              <Image 
+                src="/icons/app-icon.png"
+                alt="Wallpaper"
+                width={32}
+                height={32}
+                className="object-contain drop-shadow-md"
+              />
               <span className="mt-2 text-xs text-white drop-shadow-md">Wallpaper</span>
             </button>
           </div>
@@ -248,7 +254,13 @@ export default function UserProfilePage() {
               onClick={() => setShowGuestNote(true)}
               className="w-20 h-20 rounded-xl bg-white/20 backdrop-blur-xl shadow-xl flex flex-col items-center justify-center cursor-pointer hover:bg-white/30 transition-colors"
             >
-              <MessageSquare size={32} className="text-white drop-shadow-md" />
+              <Image 
+                src="/icons/post-it.png"
+                alt="Guest Note"
+                width={32}
+                height={32}
+                className="object-contain drop-shadow-md"
+              />
               <span className="mt-2 text-xs text-white drop-shadow-md">Guest Note</span>
             </button>
           </div>
@@ -276,7 +288,13 @@ export default function UserProfilePage() {
               onClick={handleSharePlaylist}
               className="w-20 h-20 rounded-xl bg-white/20 backdrop-blur-xl shadow-xl flex flex-col items-center justify-center cursor-pointer hover:bg-white/30 transition-colors"
             >
-              <Share2 size={32} className="text-white drop-shadow-md" />
+              <Image 
+                src="/icons/chain-icon.png"
+                alt="Share Playlist"
+                width={32}
+                height={32}
+                className="object-contain drop-shadow-md"
+              />
               <span className="mt-2 text-xs text-white drop-shadow-md">Share Playlist</span>
             </button>
           </div>
@@ -287,7 +305,13 @@ export default function UserProfilePage() {
               onClick={() => router.push("/submit-playlist")}
               className="w-20 h-20 rounded-xl bg-white/20 backdrop-blur-xl shadow-xl flex flex-col items-center justify-center cursor-pointer hover:bg-white/30 transition-colors"
             >
-              <Music size={32} className="text-white drop-shadow-md" />
+              <Image 
+                src="/icons/tv-icon.png"
+                alt="Post Playlist"
+                width={32}
+                height={32}
+                className="object-contain drop-shadow-md"
+              />
               <span className="mt-2 text-xs text-white drop-shadow-md">Post Playlist</span>
             </button>
           </div>
