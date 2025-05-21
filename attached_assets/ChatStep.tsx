@@ -184,7 +184,7 @@ export function ChatStep({ onSelect, onBack }: ChatStepProps) {
   return (
     <div className="flex flex-col items-center w-full max-w-2xl mx-auto">
       {/* Stepper - now showing as step 2 */}
-      <Stepper currentStep={2} />
+      <Stepper value={2} defaultValue={2} />
 
       <div className="w-full">
         {/* Back button */}
