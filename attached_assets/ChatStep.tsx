@@ -3,7 +3,7 @@
 import React, { useEffect, useRef, useCallback } from "react"
 import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { Stepper } from "./stepper"
+import { Stepper } from "@/components/Stepper"
 import { Button } from "@/components/ui/button"
 import { ChevronLeft, Send } from "lucide-react"
 import { ChatBubble, ChatBubbleMessage } from "@/components/chat-bubble"
@@ -188,7 +188,7 @@ export function ChatStep({ onSelect, onBack }: ChatStepProps) {
 
       <div className="w-full">
         {/* Back button */}
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3 }} className="mb-4">
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3 }} style={{ marginBottom: "1rem" }}>
           <Button onClick={onBack} variant="ghost" className="text-white hover:bg-white/10 pl-2" size="sm">
             <ChevronLeft className="mr-1 h-4 w-4" />
             Back to iPod
@@ -235,7 +235,13 @@ export function ChatStep({ onSelect, onBack }: ChatStepProps) {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3 }}
-              className="flex gap-3 self-end mt-2 justify-end"
+              style={{ 
+                display: "flex", 
+                gap: "0.75rem", 
+                alignSelf: "flex-end", 
+                marginTop: "0.5rem", 
+                justifyContent: "flex-end" 
+              }}
             >
               <ServiceButton label="Spotify" onClick={() => handleService("Spotify")} />
               <ServiceButton label="Apple Music" onClick={() => handleService("Apple Music")} />

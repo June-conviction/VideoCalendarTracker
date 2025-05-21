@@ -1,19 +1,21 @@
-// This file will act as a custom server wrapper
-const { execSync } = require('child_process');
+const { createServer } = require('http');
+const { parse } = require('url');
+const next = require('next');
 
-console.log('Starting LinkPlaylist application...');
+const dev = process.env.NODE_ENV !== 'production';
+const hostname = '0.0.0.0';
+const port = 5000;
 
-try {
-  // Set environment variables to ensure proper port binding
-  process.env.PORT = '5000';
-  process.env.HOSTNAME = '0.0.0.0';
-  
-  // Execute the next dev command
-  execSync('next dev -p 5000 -H 0.0.0.0', { 
-    stdio: 'inherit',
-    env: { ...process.env }
+// Create the Next.js app
+const app = next({ dev, hostname, port });
+const handle = app.getRequestHandler();
+
+app.prepare().then(() => {
+  createServer((req, res) => {
+    const parsedUrl = parse(req.url, true);
+    handle(req, res, parsedUrl);
+  }).listen(port, hostname, (err) => {
+    if (err) throw err;
+    console.log(`> Ready on http://${hostname}:${port}`);
   });
-} catch (error) {
-  console.error('Error starting the application:', error);
-  process.exit(1);
-}
+});

@@ -46,7 +46,7 @@ export function IpodStep({ onSelect, selectedColor }: IpodStepProps) {
                   ? 'ring-4 ring-opacity-70 scale-105' 
                   : 'scale-100'}`}
               style={{
-                ringColor: ipod.id === 'blue' ? '#4299e1' 
+                borderColor: ipod.id === 'blue' ? '#4299e1' 
                   : ipod.id === 'red' ? '#f56565' 
                   : ipod.id === 'black' ? '#2d3748' 
                   : ipod.id === 'yellow' ? '#ecc94b' 
@@ -61,7 +61,9 @@ export function IpodStep({ onSelect, selectedColor }: IpodStepProps) {
                 alt={`${ipod.name} iPod Nano`}
                 width={200}
                 height={300}
-                className="w-full h-auto"
+                className="w-full"
+                style={{ height: "auto" }}
+                priority={ipod.id === "silver"}
               />
               
               {/* Overlay for selected/hovered state */}

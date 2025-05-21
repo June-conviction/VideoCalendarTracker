@@ -1,18 +1,30 @@
-#!/usr/bin/env bash
-# 1) Make sure ~/.ssh exists
-mkdir -p ~/.ssh
-chmod 700 ~/.ssh
+#!/bin/bash
 
-# 2) Write the private key exactly as in the SSH_PRIVATE_KEY env var
-printf '%s\n' "$SSH_PRIVATE_KEY" > ~/.ssh/id_ed25519
-chmod 600 ~/.ssh/id_ed25519
+# Configure SSH for GitHub if needed
+if [ ! -f ~/.ssh/id_ed25519 ]; then
+  mkdir -p ~/.ssh
+  
+  # Generate the SSH key
+  ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519 -N "" -C "replit@example.com"
+  
+  # Configure the SSH to use the right key for github.com
+  cat > ~/.ssh/config << EOF
+Host github.com
+  User git
+  IdentityFile ~/.ssh/id_ed25519
+  StrictHostKeyChecking no
+EOF
 
-# 3) Add GitHub to known_hosts so we never get the authenticity prompt again
-ssh-keyscan github.com >> ~/.ssh/known_hosts
+  chmod 600 ~/.ssh/config
+  chmod 600 ~/.ssh/id_ed25519
+  
+  echo "SSH key generated. Add this public key to your GitHub account:"
+  cat ~/.ssh/id_ed25519.pub
+fi
 
-# 4) Start the agent and add the key
-eval "$(ssh-agent -s)"
-ssh-add ~/.ssh/id_ed25519
+# Add this line to make the script executable
+chmod +x ~/setup-ssh.sh
 
-# 5) Finally run whatever command was passed in (your dev server)
-exec "$@"
+# Display SSH public key for user reference
+echo "Your SSH public key (add to GitHub if not already done):"
+cat ~/.ssh/id_ed25519.pub
